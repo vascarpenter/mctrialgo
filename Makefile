@@ -4,3 +4,12 @@ dump:
 import:
 	mysql -uoge -phogehogeA00 studydb < studydb.sql
 
+run:
+	go run server.go
+
+build:
+	go build server.go
+
+zip:
+	zip -9 -r mctrialgo.zip ./*
+
