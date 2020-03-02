@@ -34,11 +34,16 @@ func setUserMiddleware() echo.MiddlewareFunc {
 
 			if session, err := session.Get("oursession", c); err == nil {
 				if userid, ok := session.Values["userid"]; ok {
-					useridint := userid.(uint)
-					hosp, _ := models.Hospitals(models.HospitalWhere.HospitalID.EQ(useridint), qm.Limit(1)).All(context.Background(), db)
-					if hosp != nil {
-						c.Set("UserName", hosp[0].Name)
-						c.Set("UserID", useridint)
+					//fmt.Printf("%+v", userid)
+					if userid != nil {
+						useridint := userid.(uint)
+						if useridint != 0 {
+							hosp, _ := models.Hospitals(models.HospitalWhere.HospitalID.EQ(useridint), qm.Limit(1)).All(context.Background(), db)
+							if hosp != nil {
+								c.Set("UserName", hosp[0].Name)
+								c.Set("UserID", useridint)
+							}
+						}
 					}
 				}
 			}
@@ -52,7 +57,7 @@ func redirectLoginWithoutAuth() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			userid := c.Get("UserID")
-			if userid == nil {
+			if userid == 0 || userid == nil {
 				// not login'd, go to login page
 				return c.Redirect(http.StatusFound, "/login")
 			}
@@ -83,6 +88,7 @@ func main() {
 	e.Static("/css", "./static/css")
 	e.GET("/login", routes.LoginRouter)
 	e.POST("/login", routes.LoginRouterPost)
+	e.GET("/logout", routes.LogoutRouter)
 	e.GET("/", routes.IndexRouter, setUserMiddleware(), redirectLoginWithoutAuth())
 
 	// handle error

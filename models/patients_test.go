@@ -149,7 +149,7 @@ func testPatientsExists(t *testing.T) {
 		t.Error(err)
 	}
 
-	e, err := PatientExists(ctx, tx, o.PatientID)
+	e, err := PatientExists(ctx, tx, o.ID)
 	if err != nil {
 		t.Errorf("Unable to check if Patient exists: %s", err)
 	}
@@ -175,7 +175,7 @@ func testPatientsFind(t *testing.T) {
 		t.Error(err)
 	}
 
-	patientFound, err := FindPatient(ctx, tx, o.PatientID)
+	patientFound, err := FindPatient(ctx, tx, o.ID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -568,7 +568,7 @@ func testPatientsSelect(t *testing.T) {
 }
 
 var (
-	patientDBTypes = map[string]string{`PatientID`: `int`, `HospitalID`: `int`, `Serialid`: `int`, `Initial`: `varchar`, `Birthdate`: `date`, `Female`: `tinyint`, `Age`: `int`, `Allowdate`: `date`, `Startdate`: `date`, `Dropdate`: `date`, `Dropout`: `tinyint`, `Finishdate`: `date`}
+	patientDBTypes = map[string]string{`ID`: `int`, `PatientID`: `int`, `HospitalID`: `int`, `Serialid`: `int`, `Initial`: `varchar`, `Birthdate`: `date`, `Female`: `tinyint`, `Age`: `int`, `Allowdate`: `date`, `Startdate`: `date`, `Dropdate`: `date`, `Dropout`: `tinyint`, `Finishdate`: `date`}
 	_              = bytes.MinRead
 )
 

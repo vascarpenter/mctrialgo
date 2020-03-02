@@ -24,10 +24,10 @@ import (
 
 // Event is an object representing the database table.
 type Event struct {
-	ID         uint        `boil:"id" json:"id" toml:"id" yaml:"id"`
-	Hospitalid null.Int    `boil:"hospitalid" json:"hospitalid,omitempty" toml:"hospitalid" yaml:"hospitalid,omitempty"`
-	Serialid   null.Int    `boil:"serialid" json:"serialid,omitempty" toml:"serialid" yaml:"serialid,omitempty"`
-	Eventid    null.Int    `boil:"eventid" json:"eventid,omitempty" toml:"eventid" yaml:"eventid,omitempty"`
+	ID         uint        `boil:"ID" json:"ID" toml:"ID" yaml:"ID"`
+	HospitalID uint        `boil:"hospital_id" json:"hospital_id" toml:"hospital_id" yaml:"hospital_id"`
+	Serialid   uint        `boil:"serialid" json:"serialid" toml:"serialid" yaml:"serialid"`
+	Eventid    uint        `boil:"eventid" json:"eventid" toml:"eventid" yaml:"eventid"`
 	Date       null.Time   `boil:"date" json:"date,omitempty" toml:"date" yaml:"date,omitempty"`
 	Alive      null.Bool   `boil:"alive" json:"alive,omitempty" toml:"alive" yaml:"alive,omitempty"`
 	BH         null.Int    `boil:"bh" json:"bh,omitempty" toml:"bh" yaml:"bh,omitempty"`
@@ -43,7 +43,7 @@ type Event struct {
 
 var EventColumns = struct {
 	ID         string
-	Hospitalid string
+	HospitalID string
 	Serialid   string
 	Eventid    string
 	Date       string
@@ -55,8 +55,8 @@ var EventColumns = struct {
 	HR         string
 	Event      string
 }{
-	ID:         "id",
-	Hospitalid: "hospitalid",
+	ID:         "ID",
+	HospitalID: "hospital_id",
 	Serialid:   "serialid",
 	Eventid:    "eventid",
 	Date:       "date",
@@ -79,29 +79,6 @@ func (w whereHelperuint) LT(x uint) qm.QueryMod  { return qmhelper.Where(w.field
 func (w whereHelperuint) LTE(x uint) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
 func (w whereHelperuint) GT(x uint) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
 func (w whereHelperuint) GTE(x uint) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
-
-type whereHelpernull_Int struct{ field string }
-
-func (w whereHelpernull_Int) EQ(x null.Int) qm.QueryMod {
-	return qmhelper.WhereNullEQ(w.field, false, x)
-}
-func (w whereHelpernull_Int) NEQ(x null.Int) qm.QueryMod {
-	return qmhelper.WhereNullEQ(w.field, true, x)
-}
-func (w whereHelpernull_Int) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
-func (w whereHelpernull_Int) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
-func (w whereHelpernull_Int) LT(x null.Int) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.LT, x)
-}
-func (w whereHelpernull_Int) LTE(x null.Int) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.LTE, x)
-}
-func (w whereHelpernull_Int) GT(x null.Int) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.GT, x)
-}
-func (w whereHelpernull_Int) GTE(x null.Int) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.GTE, x)
-}
 
 type whereHelpernull_Time struct{ field string }
 
@@ -149,6 +126,29 @@ func (w whereHelpernull_Bool) GTE(x null.Bool) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.GTE, x)
 }
 
+type whereHelpernull_Int struct{ field string }
+
+func (w whereHelpernull_Int) EQ(x null.Int) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, false, x)
+}
+func (w whereHelpernull_Int) NEQ(x null.Int) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, true, x)
+}
+func (w whereHelpernull_Int) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
+func (w whereHelpernull_Int) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
+func (w whereHelpernull_Int) LT(x null.Int) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LT, x)
+}
+func (w whereHelpernull_Int) LTE(x null.Int) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LTE, x)
+}
+func (w whereHelpernull_Int) GT(x null.Int) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GT, x)
+}
+func (w whereHelpernull_Int) GTE(x null.Int) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GTE, x)
+}
+
 type whereHelpernull_String struct{ field string }
 
 func (w whereHelpernull_String) EQ(x null.String) qm.QueryMod {
@@ -174,9 +174,9 @@ func (w whereHelpernull_String) GTE(x null.String) qm.QueryMod {
 
 var EventWhere = struct {
 	ID         whereHelperuint
-	Hospitalid whereHelpernull_Int
-	Serialid   whereHelpernull_Int
-	Eventid    whereHelpernull_Int
+	HospitalID whereHelperuint
+	Serialid   whereHelperuint
+	Eventid    whereHelperuint
 	Date       whereHelpernull_Time
 	Alive      whereHelpernull_Bool
 	BH         whereHelpernull_Int
@@ -186,10 +186,10 @@ var EventWhere = struct {
 	HR         whereHelpernull_Int
 	Event      whereHelpernull_String
 }{
-	ID:         whereHelperuint{field: "`events`.`id`"},
-	Hospitalid: whereHelpernull_Int{field: "`events`.`hospitalid`"},
-	Serialid:   whereHelpernull_Int{field: "`events`.`serialid`"},
-	Eventid:    whereHelpernull_Int{field: "`events`.`eventid`"},
+	ID:         whereHelperuint{field: "`events`.`ID`"},
+	HospitalID: whereHelperuint{field: "`events`.`hospital_id`"},
+	Serialid:   whereHelperuint{field: "`events`.`serialid`"},
+	Eventid:    whereHelperuint{field: "`events`.`eventid`"},
 	Date:       whereHelpernull_Time{field: "`events`.`date`"},
 	Alive:      whereHelpernull_Bool{field: "`events`.`alive`"},
 	BH:         whereHelpernull_Int{field: "`events`.`bh`"},
@@ -217,10 +217,10 @@ func (*eventR) NewStruct() *eventR {
 type eventL struct{}
 
 var (
-	eventAllColumns            = []string{"id", "hospitalid", "serialid", "eventid", "date", "alive", "bh", "bw", "sbp", "dbp", "hr", "event"}
-	eventColumnsWithoutDefault = []string{"hospitalid", "serialid", "eventid", "date", "alive", "bh", "bw", "sbp", "dbp", "hr", "event"}
-	eventColumnsWithDefault    = []string{"id"}
-	eventPrimaryKeyColumns     = []string{"id"}
+	eventAllColumns            = []string{"ID", "hospital_id", "serialid", "eventid", "date", "alive", "bh", "bw", "sbp", "dbp", "hr", "event"}
+	eventColumnsWithoutDefault = []string{"hospital_id", "serialid", "eventid", "date", "alive", "bh", "bw", "sbp", "dbp", "hr", "event"}
+	eventColumnsWithDefault    = []string{"ID"}
+	eventPrimaryKeyColumns     = []string{"ID"}
 )
 
 type (
@@ -514,7 +514,7 @@ func FindEvent(ctx context.Context, exec boil.ContextExecutor, iD uint, selectCo
 		sel = strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, selectCols), ",")
 	}
 	query := fmt.Sprintf(
-		"select %s from `events` where `id`=?", sel,
+		"select %s from `events` where `ID`=?", sel,
 	)
 
 	q := queries.Raw(query, iD)
@@ -608,7 +608,7 @@ func (o *Event) Insert(ctx context.Context, exec boil.ContextExecutor, columns b
 	}
 
 	o.ID = uint(lastID)
-	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == eventMapping["id"] {
+	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == eventMapping["ID"] {
 		goto CacheNoHooks
 	}
 
@@ -765,7 +765,7 @@ func (o EventSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, co
 }
 
 var mySQLEventUniqueColumns = []string{
-	"id",
+	"ID",
 }
 
 // Upsert attempts an insert using an executor, and does an update or ignore on conflict.
@@ -882,7 +882,7 @@ func (o *Event) Upsert(ctx context.Context, exec boil.ContextExecutor, updateCol
 	}
 
 	o.ID = uint(lastID)
-	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == eventMapping["id"] {
+	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == eventMapping["ID"] {
 		goto CacheNoHooks
 	}
 
@@ -924,7 +924,7 @@ func (o *Event) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, e
 	}
 
 	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), eventPrimaryKeyMapping)
-	sql := "DELETE FROM `events` WHERE `id`=?"
+	sql := "DELETE FROM `events` WHERE `ID`=?"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1062,7 +1062,7 @@ func (o *EventSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) e
 // EventExists checks if the Event row exists.
 func EventExists(ctx context.Context, exec boil.ContextExecutor, iD uint) (bool, error) {
 	var exists bool
-	sql := "select exists(select 1 from `events` where `id`=? limit 1)"
+	sql := "select exists(select 1 from `events` where `ID`=? limit 1)"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)

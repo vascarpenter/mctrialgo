@@ -24,11 +24,12 @@ import (
 
 // Hospital is an object representing the database table.
 type Hospital struct {
+	ID          uint        `boil:"ID" json:"ID" toml:"ID" yaml:"ID"`
 	HospitalID  uint        `boil:"hospital_id" json:"hospital_id" toml:"hospital_id" yaml:"hospital_id"`
 	Name        string      `boil:"name" json:"name" toml:"name" yaml:"name"`
 	CreatedAt   time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	Userid      null.String `boil:"userid" json:"userid,omitempty" toml:"userid" yaml:"userid,omitempty"`
-	Userpass    null.String `boil:"userpass" json:"userpass,omitempty" toml:"userpass" yaml:"userpass,omitempty"`
+	Userid      string      `boil:"userid" json:"userid" toml:"userid" yaml:"userid"`
+	Userpass    string      `boil:"userpass" json:"userpass" toml:"userpass" yaml:"userpass"`
 	Mailaddress null.String `boil:"mailaddress" json:"mailaddress,omitempty" toml:"mailaddress" yaml:"mailaddress,omitempty"`
 
 	R *hospitalR `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -36,6 +37,7 @@ type Hospital struct {
 }
 
 var HospitalColumns = struct {
+	ID          string
 	HospitalID  string
 	Name        string
 	CreatedAt   string
@@ -43,6 +45,7 @@ var HospitalColumns = struct {
 	Userpass    string
 	Mailaddress string
 }{
+	ID:          "ID",
 	HospitalID:  "hospital_id",
 	Name:        "name",
 	CreatedAt:   "created_at",
@@ -91,18 +94,20 @@ func (w whereHelpertime_Time) GTE(x time.Time) qm.QueryMod {
 }
 
 var HospitalWhere = struct {
+	ID          whereHelperuint
 	HospitalID  whereHelperuint
 	Name        whereHelperstring
 	CreatedAt   whereHelpertime_Time
-	Userid      whereHelpernull_String
-	Userpass    whereHelpernull_String
+	Userid      whereHelperstring
+	Userpass    whereHelperstring
 	Mailaddress whereHelpernull_String
 }{
+	ID:          whereHelperuint{field: "`hospitals`.`ID`"},
 	HospitalID:  whereHelperuint{field: "`hospitals`.`hospital_id`"},
 	Name:        whereHelperstring{field: "`hospitals`.`name`"},
 	CreatedAt:   whereHelpertime_Time{field: "`hospitals`.`created_at`"},
-	Userid:      whereHelpernull_String{field: "`hospitals`.`userid`"},
-	Userpass:    whereHelpernull_String{field: "`hospitals`.`userpass`"},
+	Userid:      whereHelperstring{field: "`hospitals`.`userid`"},
+	Userpass:    whereHelperstring{field: "`hospitals`.`userpass`"},
 	Mailaddress: whereHelpernull_String{field: "`hospitals`.`mailaddress`"},
 }
 
@@ -123,10 +128,10 @@ func (*hospitalR) NewStruct() *hospitalR {
 type hospitalL struct{}
 
 var (
-	hospitalAllColumns            = []string{"hospital_id", "name", "created_at", "userid", "userpass", "mailaddress"}
-	hospitalColumnsWithoutDefault = []string{"name", "created_at", "userid", "userpass", "mailaddress"}
-	hospitalColumnsWithDefault    = []string{"hospital_id"}
-	hospitalPrimaryKeyColumns     = []string{"hospital_id"}
+	hospitalAllColumns            = []string{"ID", "hospital_id", "name", "created_at", "userid", "userpass", "mailaddress"}
+	hospitalColumnsWithoutDefault = []string{"hospital_id", "name", "created_at", "userid", "userpass", "mailaddress"}
+	hospitalColumnsWithDefault    = []string{"ID"}
+	hospitalPrimaryKeyColumns     = []string{"ID"}
 )
 
 type (
@@ -412,7 +417,7 @@ func Hospitals(mods ...qm.QueryMod) hospitalQuery {
 
 // FindHospital retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindHospital(ctx context.Context, exec boil.ContextExecutor, hospitalID uint, selectCols ...string) (*Hospital, error) {
+func FindHospital(ctx context.Context, exec boil.ContextExecutor, iD uint, selectCols ...string) (*Hospital, error) {
 	hospitalObj := &Hospital{}
 
 	sel := "*"
@@ -420,10 +425,10 @@ func FindHospital(ctx context.Context, exec boil.ContextExecutor, hospitalID uin
 		sel = strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, selectCols), ",")
 	}
 	query := fmt.Sprintf(
-		"select %s from `hospitals` where `hospital_id`=?", sel,
+		"select %s from `hospitals` where `ID`=?", sel,
 	)
 
-	q := queries.Raw(query, hospitalID)
+	q := queries.Raw(query, iD)
 
 	err := q.Bind(ctx, exec, hospitalObj)
 	if err != nil {
@@ -520,13 +525,13 @@ func (o *Hospital) Insert(ctx context.Context, exec boil.ContextExecutor, column
 		return ErrSyncFail
 	}
 
-	o.HospitalID = uint(lastID)
-	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == hospitalMapping["hospital_id"] {
+	o.ID = uint(lastID)
+	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == hospitalMapping["ID"] {
 		goto CacheNoHooks
 	}
 
 	identifierCols = []interface{}{
-		o.HospitalID,
+		o.ID,
 	}
 
 	if boil.IsDebug(ctx) {
@@ -678,7 +683,7 @@ func (o HospitalSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor,
 }
 
 var mySQLHospitalUniqueColumns = []string{
-	"hospital_id",
+	"ID",
 }
 
 // Upsert attempts an insert using an executor, and does an update or ignore on conflict.
@@ -801,8 +806,8 @@ func (o *Hospital) Upsert(ctx context.Context, exec boil.ContextExecutor, update
 		return ErrSyncFail
 	}
 
-	o.HospitalID = uint(lastID)
-	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == hospitalMapping["hospital_id"] {
+	o.ID = uint(lastID)
+	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == hospitalMapping["ID"] {
 		goto CacheNoHooks
 	}
 
@@ -844,7 +849,7 @@ func (o *Hospital) Delete(ctx context.Context, exec boil.ContextExecutor) (int64
 	}
 
 	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), hospitalPrimaryKeyMapping)
-	sql := "DELETE FROM `hospitals` WHERE `hospital_id`=?"
+	sql := "DELETE FROM `hospitals` WHERE `ID`=?"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -941,7 +946,7 @@ func (o HospitalSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor)
 // Reload refetches the object from the database
 // using the primary keys with an executor.
 func (o *Hospital) Reload(ctx context.Context, exec boil.ContextExecutor) error {
-	ret, err := FindHospital(ctx, exec, o.HospitalID)
+	ret, err := FindHospital(ctx, exec, o.ID)
 	if err != nil {
 		return err
 	}
@@ -980,16 +985,16 @@ func (o *HospitalSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor
 }
 
 // HospitalExists checks if the Hospital row exists.
-func HospitalExists(ctx context.Context, exec boil.ContextExecutor, hospitalID uint) (bool, error) {
+func HospitalExists(ctx context.Context, exec boil.ContextExecutor, iD uint) (bool, error) {
 	var exists bool
-	sql := "select exists(select 1 from `hospitals` where `hospital_id`=? limit 1)"
+	sql := "select exists(select 1 from `hospitals` where `ID`=? limit 1)"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
 		fmt.Fprintln(writer, sql)
-		fmt.Fprintln(writer, hospitalID)
+		fmt.Fprintln(writer, iD)
 	}
-	row := exec.QueryRowContext(ctx, sql, hospitalID)
+	row := exec.QueryRowContext(ctx, sql, iD)
 
 	err := row.Scan(&exists)
 	if err != nil {

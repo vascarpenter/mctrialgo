@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo-contrib/session"
-	"github.com/volatiletech/null"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/labstack/echo/v4"
@@ -38,11 +37,11 @@ func LoginRouterPost(c echo.Context) error {
 
 	errStr := "指定されたユーザIDが存在しません"
 	// SQL: select * from hospitals where userid = req.UserName limit 1
-	hospitals, err := models.Hospitals(models.HospitalWhere.Userid.EQ(null.StringFrom(username)), qm.Limit(1)).All(context.Background(), db)
+	hospitals, err := models.Hospitals(models.HospitalWhere.Userid.EQ(username), qm.Limit(1)).All(context.Background(), db)
 	if err != nil || hospitals == nil {
 	} else {
-		userpass, err := hospitals[0].Userpass.MarshalText()
-		if err = bcrypt.CompareHashAndPassword(userpass, []byte(pass)); err != nil {
+		userpass := hospitals[0].Userpass
+		if err = bcrypt.CompareHashAndPassword([]byte(userpass), []byte(pass)); err != nil {
 			errStr = "パスワードが間違っています"
 		} else {
 			// login success; create session and redirect to "/"

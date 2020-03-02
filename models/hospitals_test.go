@@ -149,7 +149,7 @@ func testHospitalsExists(t *testing.T) {
 		t.Error(err)
 	}
 
-	e, err := HospitalExists(ctx, tx, o.HospitalID)
+	e, err := HospitalExists(ctx, tx, o.ID)
 	if err != nil {
 		t.Errorf("Unable to check if Hospital exists: %s", err)
 	}
@@ -175,7 +175,7 @@ func testHospitalsFind(t *testing.T) {
 		t.Error(err)
 	}
 
-	hospitalFound, err := FindHospital(ctx, tx, o.HospitalID)
+	hospitalFound, err := FindHospital(ctx, tx, o.ID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -568,7 +568,7 @@ func testHospitalsSelect(t *testing.T) {
 }
 
 var (
-	hospitalDBTypes = map[string]string{`HospitalID`: `int`, `Name`: `varchar`, `CreatedAt`: `datetime`, `Userid`: `varchar`, `Userpass`: `varchar`, `Mailaddress`: `varchar`}
+	hospitalDBTypes = map[string]string{`ID`: `int`, `HospitalID`: `int`, `Name`: `varchar`, `CreatedAt`: `datetime`, `Userid`: `varchar`, `Userpass`: `varchar`, `Mailaddress`: `varchar`}
 	_               = bytes.MinRead
 )
 

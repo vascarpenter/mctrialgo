@@ -20,18 +20,18 @@
         </tr>
         {{range $i := .Patients}}
           <tr>
-              <td>{{$i.HospitalID.Value}}</td>
-              <td>{{$i.Serialid.Value}}</td>
+              <td>{{$i.HospitalID}}</td>
+              <td>{{$i.Serialid}}</td>
               <td>{{$i.Initial.Value}}</td>
               <td>{{$i.Birthdate.Value.Format "2006-1-2"}}</td>
               <td>{{$i.Age.Value}}</td>
               <td>{{ if $i.Female.Value }}女{{else}}男{{end}}</td>
               <td>
-                <button type='button' onclick="location.href='/patientedit/{{$i.HospitalID.Value}}.{{$i.Serialid.Value}}'">
+                <button type='button' onclick="location.href='/patientedit/{{$i.HospitalID}}.{{$i.Serialid}}'">
                 編集</button>                      
               </td>
               <td>
-                <button type='button' onclick="location.href='/eventlist/{{$i.HospitalID.Value}}.{{$i.Serialid.Value}}'">
+                <button type='button' onclick="location.href='/eventlist/{{$i.HospitalID}}.{{$i.Serialid}}'">
                 編集</button>                      
               </td>
           </tr>

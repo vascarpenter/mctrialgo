@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/volatiletech/null"
 )
 
 // IndexRouter  handles "/"
@@ -16,15 +15,19 @@ func IndexRouter(c echo.Context) error {
 	defer db.Close()
 
 	userid := c.Get("UserID") // useid is not nil, because if nil, middleware detects it
-	useridint := int(userid.(uint))
+	if userid == 0 || userid == nil {
+		return c.Redirect(http.StatusFound, "/login")
+	}
+	useridint := userid.(uint)
 	username := c.Get("UserName").(string)
 
 	// SQL: SELECT * FROM patients WHERE hospital_id = ?
-	patients, err := models.Patients(models.PatientWhere.HospitalID.EQ(null.IntFrom(useridint))).All(context.Background(), db)
+	patients, err := models.Patients(models.PatientWhere.HospitalID.EQ(useridint)).All(context.Background(), db)
 
 	if err != nil {
 		panic(err)
 	}
+	//fmt.Printf("%+v\n", patients[0])
 
 	htmlvariable := struct {
 		Title        string

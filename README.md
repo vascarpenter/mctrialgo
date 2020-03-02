@@ -28,6 +28,7 @@ go build server.go
 で必要なモジュールは自動的にダウンロードされるはず..
 
 Sequel Proなどでデータベースを設計
+studydb.sql にダンプを用意しました
 
 sqlboiler.tomlファイルを作り
 ```
@@ -66,6 +67,8 @@ go run server.go
 更新
 - login処理を作成
 - go.mod環境に移行
+- DB 構造に INTとUINTが混ざっていたので統一
+- NULL可能なDBカラムは、sqlboilerでは、null.Stringとなり、これは .Valueをつけてhtmlの方から参照したり、null.StringFrom(string)等に変更しないと使えない
 
 注意　cookieのsecret keyがハードコードされてたりまだ未実装です。
 
