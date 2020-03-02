@@ -1,0 +1,44 @@
+{{define "index"}}
+{{template "header" .}}
+<div id="portal-header">
+  <span class="login-user">{{.HospitalName}}さんとしてログインしています</span>&nbsp;
+  <button type="button" onclick="location.href='/logout'">ログアウト</button>&nbsp;
+  <button type="button" onclick="location.href='/resetpass'">パスワードの変更</button>
+</div>
+<div id="portal">
+    <ul class="main-list">
+      <table border=1>
+        <tr>
+          <th>HospitalID</th>
+          <th>患者番号</th>
+          <th>イニシャル</th>
+          <th>生年月日</th>
+          <th>登録時年齢</th>
+          <th>性別</th>
+          <th>基本情報の編集</th>
+          <th>来院データ</th>
+        </tr>
+        {{range $i := .Patients}}
+          <tr>
+              <td>{{$i.HospitalID.Value}}</td>
+              <td>{{$i.Serialid.Value}}</td>
+              <td>{{$i.Initial.Value}}</td>
+              <td>{{$i.Birthdate.Value.Format "2006-1-2"}}</td>
+              <td>{{$i.Age.Value}}</td>
+              <td>{{ if $i.Female.Value }}女{{else}}男{{end}}</td>
+              <td>
+                <button type='button' onclick="location.href='/patientedit/{{$i.HospitalID.Value}}.{{$i.Serialid.Value}}'">
+                編集</button>                      
+              </td>
+              <td>
+                <button type='button' onclick="location.href='/eventlist/{{$i.HospitalID.Value}}.{{$i.Serialid.Value}}'">
+                編集</button>                      
+              </td>
+          </tr>
+        {{end}}
+      </table>
+    </ul>
+    <br><br>
+</div>
+{{template "footer"}}
+{{end}}

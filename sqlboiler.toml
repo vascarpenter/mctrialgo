@@ -1,0 +1,8 @@
+[mysql]
+  dbname  = "studydb"
+  host    = "localhost"
+  port    = 3306
+  user    = "oge"
+  pass    = "hogehogeA00"
+  sslmode = "false"
+
