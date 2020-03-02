@@ -11,6 +11,7 @@ import (
 // LogoutRouter  handles "/logout"
 func LogoutRouter(c echo.Context) error {
 	session, _ := session.Get("oursession", c)
+	session.Options.MaxAge = -1 // removes cookie
 	session.Values["userid"] = uint(0)
 	_ = session.Save(c.Request(), c.Response())
 	c.Set("UserID", 0)
