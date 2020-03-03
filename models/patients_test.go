@@ -568,7 +568,7 @@ func testPatientsSelect(t *testing.T) {
 }
 
 var (
-	patientDBTypes = map[string]string{`ID`: `int`, `PatientID`: `int`, `HospitalID`: `int`, `Serialid`: `int`, `Initial`: `varchar`, `Birthdate`: `date`, `Female`: `tinyint`, `Age`: `int`, `Allowdate`: `date`, `Startdate`: `date`, `Dropdate`: `date`, `Dropout`: `tinyint`, `Finishdate`: `date`}
+	patientDBTypes = map[string]string{`ID`: `int`, `PatientID`: `varchar`, `HospitalID`: `int`, `Serialid`: `int`, `Trialgroup`: `int`, `Initial`: `varchar`, `Birthdate`: `date`, `Female`: `tinyint`, `Age`: `int`, `Allowdate`: `date`, `Startdate`: `date`, `Dropdate`: `date`, `Dropout`: `tinyint`, `Finishdate`: `date`}
 	_              = bytes.MinRead
 )
 

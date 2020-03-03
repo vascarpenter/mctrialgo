@@ -13,7 +13,6 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/volatiletech/sqlboiler/queries/qm"
 )
 
 // Template はHTMLテンプレートを利用するためのRenderer Interfaceです。
@@ -26,6 +25,7 @@ func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Con
 	return t.templates.ExecuteTemplate(w, name, data)
 }
 
+// setUserMiddleware　cookieを参照して、ユーザがログインしていればdbにアクセスし名前、IDをcontextに入れる
 func setUserMiddleware() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
@@ -38,9 +38,9 @@ func setUserMiddleware() echo.MiddlewareFunc {
 					if userid != nil {
 						useridint := userid.(uint)
 						if useridint != 0 {
-							hosp, _ := models.Hospitals(models.HospitalWhere.HospitalID.EQ(useridint), qm.Limit(1)).All(context.Background(), db)
+							hosp, _ := models.Hospitals(models.HospitalWhere.HospitalID.EQ(useridint)).One(context.Background(), db)
 							if hosp != nil {
-								c.Set("UserName", hosp[0].Name)
+								c.Set("UserName", hosp.Name)
 								c.Set("UserID", useridint)
 							}
 						}
@@ -53,6 +53,7 @@ func setUserMiddleware() echo.MiddlewareFunc {
 	}
 }
 
+// redirectLoginWithoutAuth  contextにIDが入っていないか 0であった場合は、login画面にリダイレクトする
 func redirectLoginWithoutAuth() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
@@ -86,6 +87,12 @@ func main() {
 
 	// Routes
 	e.Static("/css", "./static/css")
+	e.GET("/register", routes.RegisterRouter)
+	e.POST("/register", routes.RegisterRouterPost)
+	e.GET("/resetpass", routes.ResetPassRouter, setUserMiddleware(), redirectLoginWithoutAuth())
+	e.POST("/resetpass", routes.ResetPassRouterPost, setUserMiddleware(), redirectLoginWithoutAuth())
+	e.GET("/patient", routes.PatientRouter, setUserMiddleware(), redirectLoginWithoutAuth())
+	e.POST("/patient", routes.PatientRouterPost, setUserMiddleware(), redirectLoginWithoutAuth())
 	e.GET("/login", routes.LoginRouter)
 	e.POST("/login", routes.LoginRouterPost)
 	e.GET("/logout", routes.LogoutRouter)

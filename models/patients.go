@@ -25,9 +25,10 @@ import (
 // Patient is an object representing the database table.
 type Patient struct {
 	ID         uint        `boil:"ID" json:"ID" toml:"ID" yaml:"ID"`
-	PatientID  uint        `boil:"patient_id" json:"patient_id" toml:"patient_id" yaml:"patient_id"`
+	PatientID  null.String `boil:"patient_id" json:"patient_id,omitempty" toml:"patient_id" yaml:"patient_id,omitempty"`
 	HospitalID uint        `boil:"hospital_id" json:"hospital_id" toml:"hospital_id" yaml:"hospital_id"`
 	Serialid   uint        `boil:"serialid" json:"serialid" toml:"serialid" yaml:"serialid"`
+	Trialgroup int         `boil:"trialgroup" json:"trialgroup" toml:"trialgroup" yaml:"trialgroup"`
 	Initial    null.String `boil:"initial" json:"initial,omitempty" toml:"initial" yaml:"initial,omitempty"`
 	Birthdate  null.Time   `boil:"birthdate" json:"birthdate,omitempty" toml:"birthdate" yaml:"birthdate,omitempty"`
 	Female     null.Bool   `boil:"female" json:"female,omitempty" toml:"female" yaml:"female,omitempty"`
@@ -47,6 +48,7 @@ var PatientColumns = struct {
 	PatientID  string
 	HospitalID string
 	Serialid   string
+	Trialgroup string
 	Initial    string
 	Birthdate  string
 	Female     string
@@ -61,6 +63,7 @@ var PatientColumns = struct {
 	PatientID:  "patient_id",
 	HospitalID: "hospital_id",
 	Serialid:   "serialid",
+	Trialgroup: "trialgroup",
 	Initial:    "initial",
 	Birthdate:  "birthdate",
 	Female:     "female",
@@ -74,11 +77,28 @@ var PatientColumns = struct {
 
 // Generated where
 
+type whereHelperint struct{ field string }
+
+func (w whereHelperint) EQ(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
+func (w whereHelperint) NEQ(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
+func (w whereHelperint) LT(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
+func (w whereHelperint) LTE(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
+func (w whereHelperint) GT(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
+func (w whereHelperint) GTE(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
+func (w whereHelperint) IN(slice []int) qm.QueryMod {
+	values := make([]interface{}, 0, len(slice))
+	for _, value := range slice {
+		values = append(values, value)
+	}
+	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
+}
+
 var PatientWhere = struct {
 	ID         whereHelperuint
-	PatientID  whereHelperuint
+	PatientID  whereHelpernull_String
 	HospitalID whereHelperuint
 	Serialid   whereHelperuint
+	Trialgroup whereHelperint
 	Initial    whereHelpernull_String
 	Birthdate  whereHelpernull_Time
 	Female     whereHelpernull_Bool
@@ -90,9 +110,10 @@ var PatientWhere = struct {
 	Finishdate whereHelpernull_Time
 }{
 	ID:         whereHelperuint{field: "`patients`.`ID`"},
-	PatientID:  whereHelperuint{field: "`patients`.`patient_id`"},
+	PatientID:  whereHelpernull_String{field: "`patients`.`patient_id`"},
 	HospitalID: whereHelperuint{field: "`patients`.`hospital_id`"},
 	Serialid:   whereHelperuint{field: "`patients`.`serialid`"},
+	Trialgroup: whereHelperint{field: "`patients`.`trialgroup`"},
 	Initial:    whereHelpernull_String{field: "`patients`.`initial`"},
 	Birthdate:  whereHelpernull_Time{field: "`patients`.`birthdate`"},
 	Female:     whereHelpernull_Bool{field: "`patients`.`female`"},
@@ -121,8 +142,8 @@ func (*patientR) NewStruct() *patientR {
 type patientL struct{}
 
 var (
-	patientAllColumns            = []string{"ID", "patient_id", "hospital_id", "serialid", "initial", "birthdate", "female", "age", "allowdate", "startdate", "dropdate", "dropout", "finishdate"}
-	patientColumnsWithoutDefault = []string{"patient_id", "hospital_id", "serialid", "initial", "birthdate", "female", "age", "allowdate", "startdate", "dropdate", "dropout", "finishdate"}
+	patientAllColumns            = []string{"ID", "patient_id", "hospital_id", "serialid", "trialgroup", "initial", "birthdate", "female", "age", "allowdate", "startdate", "dropdate", "dropout", "finishdate"}
+	patientColumnsWithoutDefault = []string{"patient_id", "hospital_id", "serialid", "trialgroup", "initial", "birthdate", "female", "age", "allowdate", "startdate", "dropdate", "dropout", "finishdate"}
 	patientColumnsWithDefault    = []string{"ID"}
 	patientPrimaryKeyColumns     = []string{"ID"}
 )

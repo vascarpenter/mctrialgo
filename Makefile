@@ -11,5 +11,6 @@ build:
 	go build server.go
 
 zip:
+	rm mctrialgo mctrialgo.zip
 	zip -9 -r mctrialgo.zip ./*
 

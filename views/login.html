@@ -1,7 +1,7 @@
 {{define "login"}}
 {{template "header" .}}
 <div id="login">
-    <p class="main-title"></p>
+    <p class="main-title">{{.Title}}</p>
     <form action="/login" method="post" class="board-form">
         <span class="label">ID</span><input type="text" name="userid" class="input" required><br>
         <br>
@@ -11,7 +11,7 @@
         <br>
         <button type="button" name="register" class="submit" onclick="location.href='/register'">新規病院登録</button>
     </form>
-    {{if ne .NoUser ""  }} {{/* ()をつけるとおかしくなる*/}}
+    {{if ne .NoUser ""}}
         <p class="error">{{.NoUser}}</p>
     {{end}}
 </div>

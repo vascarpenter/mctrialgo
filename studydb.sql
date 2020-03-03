@@ -65,7 +65,7 @@ CREATE TABLE `hospitals` (
   `userpass` varchar(80) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
   `mailaddress` varchar(80) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -74,7 +74,7 @@ CREATE TABLE `hospitals` (
 
 LOCK TABLES `hospitals` WRITE;
 /*!40000 ALTER TABLE `hospitals` DISABLE KEYS */;
-INSERT INTO `hospitals` VALUES (1,7,'サンプル病院(pass test)','2020-01-30 17:48:57','test','$2b$10$k6ICyWTb73z6td4yO2fmaOyIgnLyVv/xmjhvWiC796WEQiOblRVDy','test@gmail.com'),(2,8,'サンプル病院２','2020-02-02 20:29:28','test2','$2b$10$lKqbAlp39v1LNPR2tpHzMOpCbatpxlOdEqqr2QhsBdid2ATEAk0zu','test2@me.com');
+INSERT INTO `hospitals` VALUES (1,7,'サンプル病院(pass test)','2020-01-30 17:48:57','test','$2a$10$HuKg5hNOrQvlNn1p6Ck00O45fk1MoL4gsikUbbnvCz7bsAGWEUa.y','test@gmail.com'),(2,8,'サンプル病院２','2020-02-02 20:29:28','test2','$2b$10$lKqbAlp39v1LNPR2tpHzMOpCbatpxlOdEqqr2QhsBdid2ATEAk0zu','test2@me.com'),(3,3,'サンプル病院3','2020-03-03 12:57:48','test3','$2a$10$1P0F0FLYzFbYuzWW2xVpBudMKSP8LoW32QNmA0JdtpHLTboSVyLb.','test3@gmail.com');
 /*!40000 ALTER TABLE `hospitals` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -87,9 +87,10 @@ DROP TABLE IF EXISTS `patients`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `patients` (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
-  `patient_id` int unsigned NOT NULL,
+  `patient_id` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '',
   `hospital_id` int unsigned NOT NULL,
   `serialid` int unsigned NOT NULL,
+  `trialgroup` int NOT NULL,
   `initial` varchar(80) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
   `birthdate` date DEFAULT NULL,
   `female` tinyint(1) DEFAULT NULL,
@@ -109,7 +110,7 @@ CREATE TABLE `patients` (
 
 LOCK TABLES `patients` WRITE;
 /*!40000 ALTER TABLE `patients` DISABLE KEYS */;
-INSERT INTO `patients` VALUES (1,1,7,1,'A.I.','1970-03-04',0,49,NULL,NULL,NULL,NULL,NULL),(2,2,7,2,'B.C','1950-05-06',0,69,NULL,NULL,NULL,NULL,NULL),(3,3,7,3,'D.E','1960-01-23',0,50,NULL,NULL,NULL,NULL,NULL),(4,4,8,1,'E.C','1980-04-05',1,10,NULL,NULL,NULL,NULL,NULL),(5,7,7,4,'T.T','1970-01-01',0,50,NULL,NULL,NULL,NULL,NULL),(6,8,7,5,'F.G','1920-01-01',0,100,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `patients` VALUES (1,'1',7,1,0,'A.I.','1970-03-04',0,49,'2020-03-03','2020-03-03',NULL,NULL,NULL),(2,'2',7,2,0,'B.C','1950-05-06',0,69,'2020-03-03','2020-03-03',NULL,NULL,NULL),(3,'3',7,3,0,'D.E','1960-01-23',0,50,'2020-03-03','2020-03-03',NULL,NULL,NULL),(4,'4',8,1,0,'E.C','1980-04-05',1,10,'2020-03-03','2020-03-03',NULL,NULL,NULL),(5,'7',7,4,0,'T.T','1970-01-01',0,50,'2020-03-03','2020-03-03',NULL,NULL,NULL),(6,'8',7,5,0,'F.G','1920-01-01',0,100,'2020-03-03','2020-03-03',NULL,NULL,NULL);
 /*!40000 ALTER TABLE `patients` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -122,4 +123,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-03-03  6:30:04
+-- Dump completed on 2020-03-03 17:01:01

@@ -2,13 +2,21 @@ package routes
 
 import (
 	"context"
+	"fmt"
 	"mctrialgo/models"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
 
-// IndexRouter  handles "/"
+type indexHTMLtemplate struct {
+	Title        string
+	HospitalName string
+	Patients     models.PatientSlice
+	CSS          string
+}
+
+// IndexRouter  GET "/" を処理
 func IndexRouter(c echo.Context) error {
 
 	db := Repository()
@@ -27,18 +35,13 @@ func IndexRouter(c echo.Context) error {
 	if err != nil {
 		panic(err)
 	}
-	//fmt.Printf("%+v\n", patients[0])
+	fmt.Printf("%+v\n", patients[0])
 
-	htmlvariable := struct {
-		Title        string
-		HospitalName string
-		Patients     models.PatientSlice
-		Css          string
-	}{
-		Title:        "テストページ",
+	htmlvariable := indexHTMLtemplate{
+		Title:        "患者一覧",
 		HospitalName: username,
 		Patients:     patients,
-		Css:          "/css/index.css",
+		CSS:          "/css/index.css",
 	}
 	return c.Render(http.StatusOK, "index", htmlvariable)
 }

@@ -6,39 +6,51 @@
   <button type="button" onclick="location.href='/resetpass'">パスワードの変更</button>
 </div>
 <div id="portal">
+  <p class="main-title">{{.Title}}</p>
     <ul class="main-list">
-      <table border=1>
+    <table border=1>
+      <tr>
+        <th>HospitalID</th>
+        <th>患者#</th>
+        <th>施設ID</th>
+        <th>イニシャル</th>
+        <th>生年月日</th>
+        <th>登録時年齢</th>
+        <th>性別</th>
+        <th>登録グループ</th>
+        <th>同意取得</th>
+        <th>試験開始</th>
+        <th>基本情報の編集</th>
+        <th>来院データ</th>
+      </tr>
+      {{range $i := .Patients}}
         <tr>
-          <th>HospitalID</th>
-          <th>患者番号</th>
-          <th>イニシャル</th>
-          <th>生年月日</th>
-          <th>登録時年齢</th>
-          <th>性別</th>
-          <th>基本情報の編集</th>
-          <th>来院データ</th>
+            <td>{{$i.HospitalID}}</td>
+            <td>{{$i.Serialid}}</td>
+            <td>{{$i.PatientID.Value}}</td>
+            <td>{{$i.Initial.Value}}</td>
+            <td>{{$i.Birthdate.Value.Format "2006-01-02"}}</td>
+            <td>{{$i.Age.Value}}</td>
+            <td>{{ if $i.Female.Value }}女{{else}}男{{end}}</td>
+            <td>{{$i.Trialgroup}}</td>
+            <td>{{$i.Allowdate.Value.Format "2006-01-02"}}</td>
+            <td>{{$i.Startdate.Value.Format "2006-01-02"}}</td>
+            <td>
+              <button type='button' onclick="location.href='/patientedit/{{$i.HospitalID}}.{{$i.Serialid}}'">
+              編集</button>                      
+            </td>
+            <td>
+              <button type='button' onclick="location.href='/eventlist/{{$i.HospitalID}}.{{$i.Serialid}}'">
+              編集</button>                      
+            </td>
         </tr>
-        {{range $i := .Patients}}
-          <tr>
-              <td>{{$i.HospitalID}}</td>
-              <td>{{$i.Serialid}}</td>
-              <td>{{$i.Initial.Value}}</td>
-              <td>{{$i.Birthdate.Value.Format "2006-1-2"}}</td>
-              <td>{{$i.Age.Value}}</td>
-              <td>{{ if $i.Female.Value }}女{{else}}男{{end}}</td>
-              <td>
-                <button type='button' onclick="location.href='/patientedit/{{$i.HospitalID}}.{{$i.Serialid}}'">
-                編集</button>                      
-              </td>
-              <td>
-                <button type='button' onclick="location.href='/eventlist/{{$i.HospitalID}}.{{$i.Serialid}}'">
-                編集</button>                      
-              </td>
-          </tr>
-        {{end}}
-      </table>
-    </ul>
-    <br><br>
+      {{end}}
+    </table>
+  </ul>
+  <br><br>
+
+  <button type="button" name="patient" class="submit" onclick="location.href='/patient'">新規患者登録はこちら</button>
+    
 </div>
 {{template "footer"}}
 {{end}}

@@ -9,58 +9,56 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/labstack/echo/v4"
-	"github.com/volatiletech/sqlboiler/queries/qm"
 )
 
-// LoginRouter  handles "/login"
+type loginHTMLtemplate struct {
+	Title  string
+	NoUser string
+	CSS    string
+}
+
+// LoginRouter  GET "/login" を処理
 func LoginRouter(c echo.Context) error {
 
-	htmlvariable := struct {
-		Title  string
-		NoUser string
-		Css    string
-	}{
-		Title:  "ログイン",
+	htmlvariable := loginHTMLtemplate{
+		Title:  "多施設臨床トライアルシステム ログイン",
 		NoUser: "",
-		Css:    "/css/login.css",
+		CSS:    "/css/login.css",
 	}
 	return c.Render(http.StatusOK, "login", htmlvariable)
 }
 
+// LoginRouterPost  POST "/login" を処理
 func LoginRouterPost(c echo.Context) error {
 
 	db := Repository()
 	defer db.Close()
 
-	username := c.FormValue("userid")
+	userID := c.FormValue("userid")
 	pass := c.FormValue("password")
 
 	errStr := "指定されたユーザIDが存在しません"
-	// SQL: select * from hospitals where userid = req.UserName limit 1
-	hospitals, err := models.Hospitals(models.HospitalWhere.Userid.EQ(username), qm.Limit(1)).All(context.Background(), db)
-	if err != nil || hospitals == nil {
+	// SQL: select * from hospitals where userid = req.userid limit 1
+	hospital, err := models.Hospitals(models.HospitalWhere.Userid.EQ(userID)).One(context.Background(), db)
+	if err != nil || hospital == nil {
 	} else {
-		userpass := hospitals[0].Userpass
+		userpass := hospital.Userpass
 		if err = bcrypt.CompareHashAndPassword([]byte(userpass), []byte(pass)); err != nil {
 			errStr = "パスワードが間違っています"
 		} else {
 			// login success; create session and redirect to "/"
 			session, _ := session.Get("oursession", c)
-			session.Values["userid"] = hospitals[0].HospitalID
+			session.Values["userid"] = hospital.HospitalID
 			err = session.Save(c.Request(), c.Response())
 			return c.Redirect(http.StatusFound, "/")
 		}
 
 	}
 
-	htmlvariable := struct {
-		Title  string
-		NoUser string
-		Css    string
-	}{
-		Title:  "ログイン",
+	htmlvariable := loginHTMLtemplate{
+		Title:  "多施設臨床トライアルシステム ログイン",
 		NoUser: errStr,
-		Css:    "/css/login.css",
+		CSS:    "/css/login.css",
 	}
 	return c.Render(http.StatusOK, "login", htmlvariable)
 }
