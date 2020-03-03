@@ -73,7 +73,7 @@ make run
 - go.mod環境に移行
 - DB 構造に INTとUINTが混ざっていたので統一
 - NULL可能なDBカラムは、sqlboilerでは、null.Stringとなり、これは .Valueをつけてhtmlの方から参照したり、null.StringFrom(string)等に変更しないと使えない
-- VSCodeのlintはかなーり強力だが、html templateの中の typo までは指摘してくれない
+- VSCodeのlintはかなーり強力だが、html templateの中の typo までは指摘してくれず真っ白画面になる   html comment  {{/* */}} なんぞを使って切り分けしていくしかない
 
 注意
 - cookieのsecret keyがハードコードされてたりまだ未実装です。

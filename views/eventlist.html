@@ -1,0 +1,68 @@
+{{define "eventlist"}}
+{{template "header" .}}
+<div id="portal-header">
+  <span class="login-user">{{.HospitalName}}さんとしてログインしています</span>&nbsp;
+  <button type="button" onclick="location.href='/logout'">ログアウト</button>&nbsp;
+  <button type="button" onclick="location.href='/resetpass'">パスワードの変更</button>
+</div>
+<table border=1>
+    <tr>
+      <th>HospitalID</th>
+      <th>患者番号</th>
+      <th>施設ID</th>
+      <th>イニシャル</th>
+      <th>登録時年齢</th>
+      <th>性別</th>
+    </tr>
+    <tr>
+        <td>{{.Person.HospitalID}}</td>
+        <td>{{.Person.Serialid}}</td>
+        <td>{{.Person.PatientID.Value}}</td>
+        <td>{{.Person.Initial.Value}}</td>
+        <td>{{.Person.Age.Value}}</td>
+        <td>{{ if .Person.Female.Value }}女{{else}}男{{end}}</td>
+    </tr>
+</table>
+上記患者さんのイベントリスト
+<div id="portal">
+    <ul class="main-list">
+    <table border=1>
+    <tr>
+        <th>イベント月日</th>
+        <th>生存しているか</th>
+        <th>身長</th>
+        <th>体重</th>
+        <th>SBP</th>
+        <th>DBP</th>
+        <th>HR</th>
+        <th>イベント内容</th>
+        <th>修正</th>
+    </tr>
+  {{range $i := .Events}}
+        <tr>
+
+            <td>{{$i.Date.Value.Format "2006-01-02"}}</td>
+            <td>{{if $i.Alive.Value}}Yes{{else}}No{{end}}</td>
+            <td>{{$i.BH.Value}}</td>
+            <td>{{$i.BW.Value}}</td>
+            <td>{{$i.SBP.Value}}</td>
+            <td>{{$i.DBP.Value}}</td>
+            <td>{{$i.HR.Value}}</td>
+            <td>{{$i.Event.Value}}</td>
+
+            <td>
+                <button type='button' onclick="location.href='/eventedit/{{$i.HospitalID}}/{{$i.Serialid}}/{{$i.Eventid}}'">
+                編集</button>                      
+            </td>
+        </tr>
+    {{end}}
+
+    </table>
+  </ul>
+  <br><br>
+
+  <button type="button" name="patient" class="submit" onclick="location.href='/event/{{.Person.HospitalID}}/{{.Person.Serialid}}'">新規イベント登録</button>
+    
+</div>
+{{template "footer"}}
+{{end}}
