@@ -28,7 +28,6 @@ go build server.go
 で必要なモジュールは自動的にダウンロードされるはず..
 
 Sequel Proなどでデータベースを設計
-studydb.sql にダンプを用意しました
 
 sqlboiler.tomlファイルを作り
 ```
@@ -49,19 +48,24 @@ modelsディレクトリに自動でデータベースの内容を読み込ん�
 
 ディレクトリ構造
 ```
-├── README.md
 ├── models
 ├── routes
-├── server
-├── server.go
-├── sqlboiler.toml
 ├── static
+│   └── css
 └── views
+```
+
+データの準備
+```
+mysqlにoge, hogehogeA00というユーザを準備する
+make import  (SQLが読み込まれます)
 ```
 
 実行
 ```
 go run server.go
+あるいは
+make run
 ```
 
 更新
@@ -70,7 +74,8 @@ go run server.go
 - DB 構造に INTとUINTが混ざっていたので統一
 - NULL可能なDBカラムは、sqlboilerでは、null.Stringとなり、これは .Valueをつけてhtmlの方から参照したり、null.StringFrom(string)等に変更しないと使えない
 - VSCodeのlintはかなーり強力だが、html templateの中の typo までは指摘してくれない
-注意　cookieのsecret keyがハードコードされてたりまだ未実装です。
 
-更新中です
+注意
+- cookieのsecret keyがハードコードされてたりまだ未実装です。
+- 更新中です
 

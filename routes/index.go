@@ -2,7 +2,6 @@ package routes
 
 import (
 	"context"
-	"fmt"
 	"mctrialgo/models"
 	"net/http"
 
@@ -35,7 +34,7 @@ func IndexRouter(c echo.Context) error {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("%+v\n", patients[0])
+	// fmt.Printf("%+v\n", patients[0])
 
 	htmlvariable := indexHTMLtemplate{
 		Title:        "患者一覧",

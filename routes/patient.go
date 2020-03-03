@@ -2,7 +2,6 @@ package routes
 
 import (
 	"context"
-	"fmt"
 	"mctrialgo/models"
 	"net/http"
 	"strconv"
@@ -10,6 +9,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/volatiletech/null"
+	"github.com/volatiletech/sqlboiler/boil"
 )
 
 type patientHTMLtemplate struct {
@@ -127,8 +127,9 @@ func PatientRouterPost(c echo.Context) error {
 	patient.Allowdate = null.TimeFrom(allowdate)
 	patient.Startdate = null.TimeFrom(startdate)
 	patient.Female = null.BoolFrom(c.FormValue("sex") != "0")
+	//	fmt.Printf("%+v\n", patient)
 
-	fmt.Printf("%+v\n", patient)
+	patient.Insert(ctx, db, boil.Infer())
 	return c.Redirect(http.StatusFound, "/")
 
 }
