@@ -10,7 +10,9 @@ run:
 build:
 	go build server.go
 
-zip:
-	rm mctrialgo mctrialgo.zip
+clean: 
+	rm -f server mctrialgo mctrialgo.zip
+
+zip:	clean dump
 	zip -9 -r mctrialgo.zip ./*
 

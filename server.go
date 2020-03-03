@@ -96,6 +96,8 @@ func main() {
 	e.GET("/login", routes.LoginRouter)
 	e.POST("/login", routes.LoginRouterPost)
 	e.GET("/logout", routes.LogoutRouter)
+	e.GET("/patientedit/:hosp/:ser", routes.PatientEditRouter, setUserMiddleware(), redirectLoginWithoutAuth())
+	e.POST("/patientedit/:hosp/:ser", routes.PatientEditRouterPost, setUserMiddleware(), redirectLoginWithoutAuth())
 	e.GET("/", routes.IndexRouter, setUserMiddleware(), redirectLoginWithoutAuth())
 
 	// handle error

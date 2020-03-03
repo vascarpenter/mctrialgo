@@ -36,11 +36,11 @@
             <td>{{$i.Allowdate.Value.Format "2006-01-02"}}</td>
             <td>{{$i.Startdate.Value.Format "2006-01-02"}}</td>
             <td>
-              <button type='button' onclick="location.href='/patientedit/{{$i.HospitalID}}.{{$i.Serialid}}'">
+              <button type='button' onclick="location.href='/patientedit/{{$i.HospitalID}}/{{$i.Serialid}}'">
               編集</button>                      
             </td>
             <td>
-              <button type='button' onclick="location.href='/eventlist/{{$i.HospitalID}}.{{$i.Serialid}}'">
+              <button type='button' onclick="location.href='/eventlist/{{$i.HospitalID}}/{{$i.Serialid}}'">
               編集</button>                      
             </td>
         </tr>
