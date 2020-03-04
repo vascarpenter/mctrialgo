@@ -568,7 +568,7 @@ func testEventsSelect(t *testing.T) {
 }
 
 var (
-	eventDBTypes = map[string]string{`ID`: `int`, `HospitalID`: `int`, `Serialid`: `int`, `Eventid`: `int`, `Date`: `date`, `Alive`: `tinyint`, `BH`: `int`, `BW`: `int`, `SBP`: `int`, `DBP`: `int`, `HR`: `int`, `Event`: `varchar`}
+	eventDBTypes = map[string]string{`ID`: `int`, `HospitalID`: `int`, `Serialid`: `int`, `Eventid`: `int`, `Date`: `date`, `Alive`: `tinyint`, `Dropout`: `tinyint`, `Macce`: `tinyint`, `BH`: `int`, `BW`: `int`, `SBP`: `int`, `DBP`: `int`, `HR`: `int`, `Event`: `varchar`}
 	_            = bytes.MinRead
 )
 

@@ -30,6 +30,8 @@ type Event struct {
 	Eventid    uint        `boil:"eventid" json:"eventid" toml:"eventid" yaml:"eventid"`
 	Date       null.Time   `boil:"date" json:"date,omitempty" toml:"date" yaml:"date,omitempty"`
 	Alive      null.Bool   `boil:"alive" json:"alive,omitempty" toml:"alive" yaml:"alive,omitempty"`
+	Dropout    null.Bool   `boil:"dropout" json:"dropout,omitempty" toml:"dropout" yaml:"dropout,omitempty"`
+	Macce      null.Bool   `boil:"macce" json:"macce,omitempty" toml:"macce" yaml:"macce,omitempty"`
 	BH         null.Int    `boil:"bh" json:"bh,omitempty" toml:"bh" yaml:"bh,omitempty"`
 	BW         null.Int    `boil:"bw" json:"bw,omitempty" toml:"bw" yaml:"bw,omitempty"`
 	SBP        null.Int    `boil:"sbp" json:"sbp,omitempty" toml:"sbp" yaml:"sbp,omitempty"`
@@ -48,6 +50,8 @@ var EventColumns = struct {
 	Eventid    string
 	Date       string
 	Alive      string
+	Dropout    string
+	Macce      string
 	BH         string
 	BW         string
 	SBP        string
@@ -61,6 +65,8 @@ var EventColumns = struct {
 	Eventid:    "eventid",
 	Date:       "date",
 	Alive:      "alive",
+	Dropout:    "dropout",
+	Macce:      "macce",
 	BH:         "bh",
 	BW:         "bw",
 	SBP:        "sbp",
@@ -179,6 +185,8 @@ var EventWhere = struct {
 	Eventid    whereHelperuint
 	Date       whereHelpernull_Time
 	Alive      whereHelpernull_Bool
+	Dropout    whereHelpernull_Bool
+	Macce      whereHelpernull_Bool
 	BH         whereHelpernull_Int
 	BW         whereHelpernull_Int
 	SBP        whereHelpernull_Int
@@ -192,6 +200,8 @@ var EventWhere = struct {
 	Eventid:    whereHelperuint{field: "`events`.`eventid`"},
 	Date:       whereHelpernull_Time{field: "`events`.`date`"},
 	Alive:      whereHelpernull_Bool{field: "`events`.`alive`"},
+	Dropout:    whereHelpernull_Bool{field: "`events`.`dropout`"},
+	Macce:      whereHelpernull_Bool{field: "`events`.`macce`"},
 	BH:         whereHelpernull_Int{field: "`events`.`bh`"},
 	BW:         whereHelpernull_Int{field: "`events`.`bw`"},
 	SBP:        whereHelpernull_Int{field: "`events`.`sbp`"},
@@ -217,8 +227,8 @@ func (*eventR) NewStruct() *eventR {
 type eventL struct{}
 
 var (
-	eventAllColumns            = []string{"ID", "hospital_id", "serialid", "eventid", "date", "alive", "bh", "bw", "sbp", "dbp", "hr", "event"}
-	eventColumnsWithoutDefault = []string{"hospital_id", "serialid", "eventid", "date", "alive", "bh", "bw", "sbp", "dbp", "hr", "event"}
+	eventAllColumns            = []string{"ID", "hospital_id", "serialid", "eventid", "date", "alive", "dropout", "macce", "bh", "bw", "sbp", "dbp", "hr", "event"}
+	eventColumnsWithoutDefault = []string{"hospital_id", "serialid", "eventid", "date", "alive", "dropout", "macce", "bh", "bw", "sbp", "dbp", "hr", "event"}
 	eventColumnsWithDefault    = []string{"ID"}
 	eventPrimaryKeyColumns     = []string{"ID"}
 )

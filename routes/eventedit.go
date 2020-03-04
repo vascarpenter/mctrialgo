@@ -14,23 +14,22 @@ import (
 	"github.com/volatiletech/sqlboiler/queries/qm"
 )
 
-type eventHTMLtemplate struct {
+type eventeditHTMLtemplate struct {
 	Title        string
 	HospitalName string
-	Hospid       string
-	Serid        string
+	Event        models.Event
 	CSS          string
-	TodayDate    string
 }
 
-// EventRouter  GET "/event/:hosp/:ser" を処理
-func EventRouter(c echo.Context) error {
+// EventEditRouter  GET "/eventedit/:hosp/:ser/:ev" を処理
+func EventEditRouter(c echo.Context) error {
 	ctx := context.Background()
 	db := Repository()
 	defer db.Close()
 
 	hosp := c.Param("hosp")
 	ser := c.Param("ser")
+	ev := c.Param("ev")
 
 	hospid := c.Get("UserID").(uint)
 	hospidfromparam, err := strconv.Atoi(hosp)
@@ -40,37 +39,46 @@ func EventRouter(c echo.Context) error {
 	}
 	patient, err := models.Patients(qm.Where("hospital_id=? AND serialid=?", hosp, ser)).One(ctx, db)
 	if err != nil {
-		panic(err)
+		// invalid access, go to logout
+		return c.Redirect(http.StatusFound, "/logout")
+	}
+	hospname := c.Get("UserName").(string)
+	editText := hospname + " ID:" + patient.PatientID.String + " " + patient.Initial.String + "さんのイベントの編集"
+
+	event, err := models.Events(qm.Where("hospital_id=? AND serialid=? AND eventid=?", hosp, ser, ev)).One(ctx, db)
+	if err != nil {
+		// invalid access, go to logout
+		return c.Redirect(http.StatusFound, "/logout")
 	}
 
-	editing, _ := patient.Initial.MarshalText()
-	editText := string(editing) + "さんのイベントの追加"
-	hospname := c.Get("UserName").(string)
-	curDate := time.Now().Format("2006-01-02")
-
-	htmlvariable := eventHTMLtemplate{
+	htmlvariable := eventeditHTMLtemplate{
 		Title:        editText,
 		HospitalName: hospname,
-		Hospid:       hosp,
-		Serid:        ser,
+		Event:        *event,
 		CSS:          "/css/event.css",
-		TodayDate:    curDate,
 	}
-	return c.Render(http.StatusOK, "event", htmlvariable)
+	return c.Render(http.StatusOK, "eventedit", htmlvariable)
 }
 
-// EventRouterPost  POST "/event/:hosp/:ser" を処理
-func EventRouterPost(c echo.Context) error {
+// EventEditRouterPost  POST "/eventedit/:hosp/:ser/:ev" を処理
+func EventEditRouterPost(c echo.Context) error {
 	db := Repository()
 	defer db.Close()
 	ctx := context.Background()
 
 	hosp := c.Param("hosp")
 	ser := c.Param("ser")
+	ev := c.Param("ev")
 
 	hospid := c.Get("UserID").(uint)
 	hospidfromparam, err := strconv.Atoi(hosp)
 	if err != nil || hospid == 0 || hospidfromparam != int(hospid) {
+		// invalid access, go to logout
+		return c.Redirect(http.StatusFound, "/logout")
+	}
+
+	event, err := models.Events(qm.Where("hospital_id=? AND serialid=? AND eventid=?", hosp, ser, ev)).One(ctx, db)
+	if err != nil {
 		// invalid access, go to logout
 		return c.Redirect(http.StatusFound, "/logout")
 	}
@@ -86,14 +94,6 @@ func EventRouterPost(c echo.Context) error {
 	dbp, _ := strconv.Atoi(c.FormValue("dbp"))
 	hr, _ := strconv.Atoi(c.FormValue("hr"))
 
-	var event models.Event
-	count, err := models.Events(qm.Where("hospital_id=? AND serialid=?", hosp, ser)).Count(ctx, db)
-
-	serInt, _ := strconv.Atoi(ser)
-	event.HospitalID = hospid
-	event.Serialid = uint(serInt)
-	event.Eventid = uint(count + 1)
-
 	event.Alive = null.BoolFrom(c.FormValue("alive") != "0")
 	event.Dropout = null.BoolFrom(c.FormValue("dropout") != "0")
 	event.Macce = null.BoolFrom(c.FormValue("macce") != "0")
@@ -107,7 +107,7 @@ func EventRouterPost(c echo.Context) error {
 
 	//	fmt.Printf("%+v\n", event)
 
-	event.Insert(ctx, db, boil.Infer())
+	event.Update(ctx, db, boil.Infer())
 
 	return c.Redirect(http.StatusFound, "/eventlist/"+hosp+"/"+ser)
 }

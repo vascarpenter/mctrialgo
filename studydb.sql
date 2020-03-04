@@ -29,6 +29,8 @@ CREATE TABLE `events` (
   `eventid` int unsigned NOT NULL,
   `date` date DEFAULT NULL,
   `alive` tinyint(1) DEFAULT NULL,
+  `dropout` tinyint(1) DEFAULT NULL,
+  `macce` tinyint(1) DEFAULT NULL,
   `bh` int DEFAULT NULL,
   `bw` int DEFAULT NULL,
   `sbp` int DEFAULT NULL,
@@ -45,7 +47,7 @@ CREATE TABLE `events` (
 
 LOCK TABLES `events` WRITE;
 /*!40000 ALTER TABLE `events` DISABLE KEYS */;
-INSERT INTO `events` VALUES (1,7,1,1,'2020-01-01',1,170,50,120,80,60,'test'),(2,7,2,1,'2020-01-01',0,160,80,130,70,70,'test1'),(3,7,2,2,'2020-01-02',1,150,80,130,70,80,'test2'),(4,7,1,2,'2020-02-24',1,150,80,130,80,70,'test2'),(5,7,1,3,'2020-03-04',1,170,65,130,70,60,'３番目');
+INSERT INTO `events` VALUES (1,7,1,1,'2020-01-01',1,0,0,170,50,120,80,60,'test-711'),(2,7,2,1,'2020-01-01',1,0,0,160,80,130,70,70,'test1'),(3,7,2,2,'2020-01-02',1,0,0,150,80,130,70,80,'test2'),(4,7,1,2,'2020-02-24',1,0,0,150,80,130,80,70,'test2'),(5,7,1,3,'2020-03-04',1,1,0,170,65,130,70,60,'３番目');
 /*!40000 ALTER TABLE `events` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -123,4 +125,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-03-04  0:33:50
+-- Dump completed on 2020-03-04 15:13:19

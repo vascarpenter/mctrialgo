@@ -5,31 +5,37 @@
   <button type="button" onclick="location.href='/logout'">ログアウト</button>&nbsp;
   <button type="button" onclick="location.href='/resetpass'">パスワードの変更</button>
 </div>
-<table border=1>
+<ul>
+  <table border=1>
     <tr>
-      <th>HospitalID</th>
-      <th>患者番号</th>
+      <th>患者#</th>
       <th>施設ID</th>
       <th>イニシャル</th>
       <th>登録時年齢</th>
       <th>性別</th>
+      <th>試験開始日</th>
     </tr>
     <tr>
-        <td>{{.Person.HospitalID}}</td>
         <td>{{.Person.Serialid}}</td>
         <td>{{.Person.PatientID.Value}}</td>
         <td>{{.Person.Initial.Value}}</td>
         <td>{{.Person.Age.Value}}</td>
         <td>{{ if .Person.Female.Value }}女{{else}}男{{end}}</td>
+        <td>{{.Person.Startdate.Value.Format "2006-01-02"}}</td>
+        </div>
     </tr>
-</table>
-上記患者さんのイベントリスト
+  </table>
+  上記患者さんのイベントリスト
+
+</ul>
 <div id="portal">
     <ul class="main-list">
     <table border=1>
     <tr>
         <th>イベント月日</th>
-        <th>生存しているか</th>
+        <th>生存</th>
+        <th>脱落</th>
+        <th>重大イベント</th>
         <th>身長</th>
         <th>体重</th>
         <th>SBP</th>
@@ -42,7 +48,9 @@
         <tr>
 
             <td>{{$i.Date.Value.Format "2006-01-02"}}</td>
-            <td>{{if $i.Alive.Value}}Yes{{else}}No{{end}}</td>
+            <td>{{if $i.Alive.Value}}生存{{else}}死亡{{end}}</td>
+            <td>{{if $i.Dropout.Value}}あり{{else}}なし{{end}}</td>
+            <td>{{if $i.Macce.Value}}あり{{else}}なし{{end}}</td>
             <td>{{$i.BH.Value}}</td>
             <td>{{$i.BW.Value}}</td>
             <td>{{$i.SBP.Value}}</td>
@@ -58,10 +66,14 @@
     {{end}}
 
     </table>
+    <br><br>
+    <button type="button" name="patient" class="submit" onclick="location.href='/event/{{.Person.HospitalID}}/{{.Person.Serialid}}'">新規イベント登録</button>
   </ul>
-  <br><br>
 
-  <button type="button" name="patient" class="submit" onclick="location.href='/event/{{.Person.HospitalID}}/{{.Person.Serialid}}'">新規イベント登録</button>
+  <br><br>
+  <ul>
+    <button type="button" name="patient" class="submit" onclick="location.href='/'">患者一覧へ</button>
+  </ul>
     
 </div>
 {{template "footer"}}

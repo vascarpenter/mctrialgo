@@ -6,9 +6,9 @@
   <button type="button" onclick="location.href='/resetpass'">パスワードの変更</button>
 </div>
 <div id="portal">
-  <p class="main-title">{{.Title}}</p>
     <ul class="main-list">
-    <table border=1>
+      <p class="main-title">{{.Title}}</p>
+      <table border=1>
       <tr>
         <th>HospitalID</th>
         <th>患者#</th>
@@ -46,10 +46,10 @@
         </tr>
       {{end}}
     </table>
+    <br><br>
+    <button type="button" name="patient" class="submit" onclick="location.href='/patient'">新規患者登録はこちら</button>
   </ul>
-  <br><br>
 
-  <button type="button" name="patient" class="submit" onclick="location.href='/patient'">新規患者登録はこちら</button>
     
 </div>
 {{template "footer"}}
