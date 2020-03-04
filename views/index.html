@@ -20,10 +20,11 @@
         <th>登録グループ</th>
         <th>同意取得</th>
         <th>試験開始</th>
+        <th></th>
         <th>基本情報の編集</th>
         <th>来院データ</th>
       </tr>
-      {{range $i := .Patients}}
+      {{range $n,$i := .Patients}}
         <tr>
             <td>{{$i.HospitalID}}</td>
             <td>{{$i.Serialid}}</td>
@@ -35,6 +36,7 @@
             <td>{{$i.Trialgroup}}</td>
             <td>{{$i.Allowdate.Value.Format "2006-01-02"}}</td>
             <td>{{$i.Startdate.Value.Format "2006-01-02"}}</td>
+            <td>{{if $i.Diffdays.Valid}}{{$i.Diffdays.Value}}日経過{{end}}</td>
             <td>
               <button type='button' onclick="location.href='/patientedit/{{$i.HospitalID}}/{{$i.Serialid}}'">
               編集</button>                      

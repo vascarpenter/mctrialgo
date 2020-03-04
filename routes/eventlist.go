@@ -5,8 +5,10 @@ import (
 	"mctrialgo/models"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/labstack/echo/v4"
+	"github.com/volatiletech/null"
 	"github.com/volatiletech/sqlboiler/queries/qm"
 )
 
@@ -46,6 +48,20 @@ func EventlistRouter(c echo.Context) error {
 	if err != nil {
 		panic(err)
 	}
+
+	// 差分を計算し代入(temp)
+	if patient.Startdate.Valid {
+		diff := time.Now().Sub(patient.Startdate.Time)
+		patient.Diffdays = null.IntFrom(int(diff.Hours() / 24))
+		for _, e := range events {
+			if e.Date.Valid {
+				evday := e.Date.Time
+				diff := evday.Sub(patient.Startdate.Time)
+				e.Diffdays = null.IntFrom(int(diff.Hours() / 24))
+			}
+		}
+	}
+
 	//fmt.Printf("%+v\n", events[0])
 	username := c.Get("UserName").(string)
 

@@ -38,6 +38,7 @@ type Patient struct {
 	Dropdate   null.Time   `boil:"dropdate" json:"dropdate,omitempty" toml:"dropdate" yaml:"dropdate,omitempty"`
 	Dropout    null.Bool   `boil:"dropout" json:"dropout,omitempty" toml:"dropout" yaml:"dropout,omitempty"`
 	Finishdate null.Time   `boil:"finishdate" json:"finishdate,omitempty" toml:"finishdate" yaml:"finishdate,omitempty"`
+	Diffdays   null.Int    `boil:"diffdays" json:"diffdays,omitempty" toml:"diffdays" yaml:"diffdays,omitempty"`
 
 	R *patientR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L patientL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -58,6 +59,7 @@ var PatientColumns = struct {
 	Dropdate   string
 	Dropout    string
 	Finishdate string
+	Diffdays   string
 }{
 	ID:         "ID",
 	PatientID:  "patient_id",
@@ -73,6 +75,7 @@ var PatientColumns = struct {
 	Dropdate:   "dropdate",
 	Dropout:    "dropout",
 	Finishdate: "finishdate",
+	Diffdays:   "diffdays",
 }
 
 // Generated where
@@ -108,6 +111,7 @@ var PatientWhere = struct {
 	Dropdate   whereHelpernull_Time
 	Dropout    whereHelpernull_Bool
 	Finishdate whereHelpernull_Time
+	Diffdays   whereHelpernull_Int
 }{
 	ID:         whereHelperuint{field: "`patients`.`ID`"},
 	PatientID:  whereHelpernull_String{field: "`patients`.`patient_id`"},
@@ -123,6 +127,7 @@ var PatientWhere = struct {
 	Dropdate:   whereHelpernull_Time{field: "`patients`.`dropdate`"},
 	Dropout:    whereHelpernull_Bool{field: "`patients`.`dropout`"},
 	Finishdate: whereHelpernull_Time{field: "`patients`.`finishdate`"},
+	Diffdays:   whereHelpernull_Int{field: "`patients`.`diffdays`"},
 }
 
 // PatientRels is where relationship names are stored.
@@ -142,8 +147,8 @@ func (*patientR) NewStruct() *patientR {
 type patientL struct{}
 
 var (
-	patientAllColumns            = []string{"ID", "patient_id", "hospital_id", "serialid", "trialgroup", "initial", "birthdate", "female", "age", "allowdate", "startdate", "dropdate", "dropout", "finishdate"}
-	patientColumnsWithoutDefault = []string{"patient_id", "hospital_id", "serialid", "trialgroup", "initial", "birthdate", "female", "age", "allowdate", "startdate", "dropdate", "dropout", "finishdate"}
+	patientAllColumns            = []string{"ID", "patient_id", "hospital_id", "serialid", "trialgroup", "initial", "birthdate", "female", "age", "allowdate", "startdate", "dropdate", "dropout", "finishdate", "diffdays"}
+	patientColumnsWithoutDefault = []string{"patient_id", "hospital_id", "serialid", "trialgroup", "initial", "birthdate", "female", "age", "allowdate", "startdate", "dropdate", "dropout", "finishdate", "diffdays"}
 	patientColumnsWithDefault    = []string{"ID"}
 	patientPrimaryKeyColumns     = []string{"ID"}
 )

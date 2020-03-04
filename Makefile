@@ -5,10 +5,10 @@ import:
 	mysql -uoge -phogehogeA00 studydb < studydb.sql
 
 run:
-	go run server.go
+	go run .
 
 build:
-	go build server.go
+	go build
 
 clean: 
 	rm -f server mctrialgo mctrialgo.zip

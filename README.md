@@ -1,6 +1,6 @@
 # mctrialgo
 
-# 多施設共同研究用サーバー
+## 多施設共同研究用サーバーをgoで書いてみた
 
 node.jsで作っていましたが、
 - コンパイラではない
@@ -10,11 +10,10 @@ node.jsで作っていましたが、
 
 などのいくつかの理由からやはり記述言語を変えるべきと思われました
 
-候補にあがったのが swiftか goでしたが、ここはgoが親和性がよさそうだったので試してみました。
+候補にあがったのが swiftか goでしたが、ここはgoがdockerと親和性がよさそうだったので試してみました。
 
 - webフレームワークには echo
 - ORMには sqlboiler
-- (Beegoはデータベースを読めなかったので外しました)
 
 go開発環境のインストール
 ```
@@ -23,7 +22,7 @@ brew install go
 
 gomodを使ったので
 ```
-go build server.go
+go build
 ```
 で必要なモジュールは自動的にダウンロードされるはず..
 
@@ -43,8 +42,14 @@ sqlboiler.tomlファイルを作り
 (mysqlのパスワードが@を含んでいるとsql URLに"@"が含まれていて問題だったのでやむなく変更しました
 )
 
-` sqlboiler mysql　`とすると
-modelsディレクトリに自動でデータベースの内容を読み込んで go ファイルを作ってくれる
+データの準備
+```
+mysqlにoge, hogehogeA00というユーザを準備する
+make import  (SQLが読み込まれデータ構造とサンプルデータが入ります)
+```
+
+データ構造ができたところで、`sqlboiler mysql`とすると
+データベースの構造を読み込んでmodelsディレクトリ内に go ファイルを作ってくれる
 
 ディレクトリ構造
 ```
@@ -55,27 +60,24 @@ modelsディレクトリに自動でデータベースの内容を読み込ん�
 └── views
 ```
 
-データの準備
-```
-mysqlにoge, hogehogeA00というユーザを準備する
-make import  (SQLが読み込まれます)
-```
-
 実行
 ```
-go run server.go
+go run .
 あるいは
 make run
 ```
 
+サーバが起動している状態で、ブラウザで `http://127.0.0.1:3000/`　へアクセスしてみてください
+- サンプル病院1 : userid test pass test
+- サンプル病院2 : userid test2 pass test2
+- logoutするとcookieは消えます
+
 更新
-- login処理を作成
-- go.mod環境に移行
-- DB 構造に INTとUINTが混ざっていたので統一
-- NULL可能なDBカラムは、sqlboilerでは、null.Stringとなり、これは .Valueをつけてhtmlの方から参照したり、null.StringFrom(string)等に変更しないと使えない
-- VSCodeのlintはかなーり強力だが、html templateの中の typo までは指摘してくれず真っ白画面になる   html comment  {{/* */}} なんぞを使って切り分けしていくしかない
+- SQL構造の変更
+- きちんと試験開始日を入力すると、経過日を計算してくれる
+  - おおよそ30,60,90日後などに特定の検査を入れたりする場合にわかりやすいか
 
 注意
-- cookieのsecret keyがハードコードされてたりまだ未実装です。
-- 更新中です
+- cookieのsecret keyがハードコードされているので変更を。
+- VSCodeのlintはかなーり強力だが、html templateの中の typo までは指摘してくれず真っ白画面になる   html comment  {{/* */}} なんぞを使って切り分けしていくしかない go template lintは思ってたのとは違う
 

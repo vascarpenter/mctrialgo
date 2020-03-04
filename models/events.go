@@ -38,6 +38,7 @@ type Event struct {
 	DBP        null.Int    `boil:"dbp" json:"dbp,omitempty" toml:"dbp" yaml:"dbp,omitempty"`
 	HR         null.Int    `boil:"hr" json:"hr,omitempty" toml:"hr" yaml:"hr,omitempty"`
 	Event      null.String `boil:"event" json:"event,omitempty" toml:"event" yaml:"event,omitempty"`
+	Diffdays   null.Int    `boil:"diffdays" json:"diffdays,omitempty" toml:"diffdays" yaml:"diffdays,omitempty"`
 
 	R *eventR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L eventL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -58,6 +59,7 @@ var EventColumns = struct {
 	DBP        string
 	HR         string
 	Event      string
+	Diffdays   string
 }{
 	ID:         "ID",
 	HospitalID: "hospital_id",
@@ -73,6 +75,7 @@ var EventColumns = struct {
 	DBP:        "dbp",
 	HR:         "hr",
 	Event:      "event",
+	Diffdays:   "diffdays",
 }
 
 // Generated where
@@ -193,6 +196,7 @@ var EventWhere = struct {
 	DBP        whereHelpernull_Int
 	HR         whereHelpernull_Int
 	Event      whereHelpernull_String
+	Diffdays   whereHelpernull_Int
 }{
 	ID:         whereHelperuint{field: "`events`.`ID`"},
 	HospitalID: whereHelperuint{field: "`events`.`hospital_id`"},
@@ -208,6 +212,7 @@ var EventWhere = struct {
 	DBP:        whereHelpernull_Int{field: "`events`.`dbp`"},
 	HR:         whereHelpernull_Int{field: "`events`.`hr`"},
 	Event:      whereHelpernull_String{field: "`events`.`event`"},
+	Diffdays:   whereHelpernull_Int{field: "`events`.`diffdays`"},
 }
 
 // EventRels is where relationship names are stored.
@@ -227,8 +232,8 @@ func (*eventR) NewStruct() *eventR {
 type eventL struct{}
 
 var (
-	eventAllColumns            = []string{"ID", "hospital_id", "serialid", "eventid", "date", "alive", "dropout", "macce", "bh", "bw", "sbp", "dbp", "hr", "event"}
-	eventColumnsWithoutDefault = []string{"hospital_id", "serialid", "eventid", "date", "alive", "dropout", "macce", "bh", "bw", "sbp", "dbp", "hr", "event"}
+	eventAllColumns            = []string{"ID", "hospital_id", "serialid", "eventid", "date", "alive", "dropout", "macce", "bh", "bw", "sbp", "dbp", "hr", "event", "diffdays"}
+	eventColumnsWithoutDefault = []string{"hospital_id", "serialid", "eventid", "date", "alive", "dropout", "macce", "bh", "bw", "sbp", "dbp", "hr", "event", "diffdays"}
 	eventColumnsWithDefault    = []string{"ID"}
 	eventPrimaryKeyColumns     = []string{"ID"}
 )

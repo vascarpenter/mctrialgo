@@ -4,6 +4,9 @@ import (
 	"context"
 	"mctrialgo/models"
 	"net/http"
+	"time"
+
+	"github.com/volatiletech/null"
 
 	"github.com/labstack/echo/v4"
 )
@@ -20,6 +23,7 @@ func IndexRouter(c echo.Context) error {
 
 	db := Repository()
 	defer db.Close()
+	ctx := context.Background()
 
 	userid := c.Get("UserID") // useid is not nil, because if nil, middleware detects it
 	if userid == 0 || userid == nil {
@@ -29,12 +33,21 @@ func IndexRouter(c echo.Context) error {
 	username := c.Get("UserName").(string)
 
 	// SQL: SELECT * FROM patients WHERE hospital_id = ?
-	patients, err := models.Patients(models.PatientWhere.HospitalID.EQ(useridint)).All(context.Background(), db)
-
+	patients, err := models.Patients(models.PatientWhere.HospitalID.EQ(useridint)).All(ctx, db)
 	if err != nil {
 		panic(err)
 	}
+	count64, _ := models.Patients(models.PatientWhere.HospitalID.EQ(useridint)).Count(ctx, db)
+	count := int(count64)
 	// fmt.Printf("%+v\n", patients[0])
+
+	// 差分を計算
+	for i := 0; i < count; i++ {
+		if patients[i].Startdate.Valid {
+			diff := time.Now().Sub(patients[i].Startdate.Time)
+			patients[i].Diffdays = null.IntFrom(int(diff.Hours() / 24))
+		}
+	}
 
 	htmlvariable := indexHTMLtemplate{
 		Title:        "患者一覧",
