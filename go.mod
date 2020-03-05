@@ -1,4 +1,4 @@
-module mctrialgo
+module github.com/vascarpenter/mctrialgo
 
 go 1.14
 
