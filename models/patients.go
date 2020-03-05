@@ -36,7 +36,8 @@ type Patient struct {
 	Allowdate  null.Time   `boil:"allowdate" json:"allowdate,omitempty" toml:"allowdate" yaml:"allowdate,omitempty"`
 	Startdate  null.Time   `boil:"startdate" json:"startdate,omitempty" toml:"startdate" yaml:"startdate,omitempty"`
 	Dropdate   null.Time   `boil:"dropdate" json:"dropdate,omitempty" toml:"dropdate" yaml:"dropdate,omitempty"`
-	Dropout    null.Bool   `boil:"dropout" json:"dropout,omitempty" toml:"dropout" yaml:"dropout,omitempty"`
+	Maccedate  null.Time   `boil:"maccedate" json:"maccedate,omitempty" toml:"maccedate" yaml:"maccedate,omitempty"`
+	Deaddate   null.Time   `boil:"deaddate" json:"deaddate,omitempty" toml:"deaddate" yaml:"deaddate,omitempty"`
 	Finishdate null.Time   `boil:"finishdate" json:"finishdate,omitempty" toml:"finishdate" yaml:"finishdate,omitempty"`
 	Diffdays   null.Int    `boil:"diffdays" json:"diffdays,omitempty" toml:"diffdays" yaml:"diffdays,omitempty"`
 
@@ -57,7 +58,8 @@ var PatientColumns = struct {
 	Allowdate  string
 	Startdate  string
 	Dropdate   string
-	Dropout    string
+	Maccedate  string
+	Deaddate   string
 	Finishdate string
 	Diffdays   string
 }{
@@ -73,7 +75,8 @@ var PatientColumns = struct {
 	Allowdate:  "allowdate",
 	Startdate:  "startdate",
 	Dropdate:   "dropdate",
-	Dropout:    "dropout",
+	Maccedate:  "maccedate",
+	Deaddate:   "deaddate",
 	Finishdate: "finishdate",
 	Diffdays:   "diffdays",
 }
@@ -109,7 +112,8 @@ var PatientWhere = struct {
 	Allowdate  whereHelpernull_Time
 	Startdate  whereHelpernull_Time
 	Dropdate   whereHelpernull_Time
-	Dropout    whereHelpernull_Bool
+	Maccedate  whereHelpernull_Time
+	Deaddate   whereHelpernull_Time
 	Finishdate whereHelpernull_Time
 	Diffdays   whereHelpernull_Int
 }{
@@ -125,7 +129,8 @@ var PatientWhere = struct {
 	Allowdate:  whereHelpernull_Time{field: "`patients`.`allowdate`"},
 	Startdate:  whereHelpernull_Time{field: "`patients`.`startdate`"},
 	Dropdate:   whereHelpernull_Time{field: "`patients`.`dropdate`"},
-	Dropout:    whereHelpernull_Bool{field: "`patients`.`dropout`"},
+	Maccedate:  whereHelpernull_Time{field: "`patients`.`maccedate`"},
+	Deaddate:   whereHelpernull_Time{field: "`patients`.`deaddate`"},
 	Finishdate: whereHelpernull_Time{field: "`patients`.`finishdate`"},
 	Diffdays:   whereHelpernull_Int{field: "`patients`.`diffdays`"},
 }
@@ -147,8 +152,8 @@ func (*patientR) NewStruct() *patientR {
 type patientL struct{}
 
 var (
-	patientAllColumns            = []string{"ID", "patient_id", "hospital_id", "serialid", "trialgroup", "initial", "birthdate", "female", "age", "allowdate", "startdate", "dropdate", "dropout", "finishdate", "diffdays"}
-	patientColumnsWithoutDefault = []string{"patient_id", "hospital_id", "serialid", "trialgroup", "initial", "birthdate", "female", "age", "allowdate", "startdate", "dropdate", "dropout", "finishdate", "diffdays"}
+	patientAllColumns            = []string{"ID", "patient_id", "hospital_id", "serialid", "trialgroup", "initial", "birthdate", "female", "age", "allowdate", "startdate", "dropdate", "maccedate", "deaddate", "finishdate", "diffdays"}
+	patientColumnsWithoutDefault = []string{"patient_id", "hospital_id", "serialid", "trialgroup", "initial", "birthdate", "female", "age", "allowdate", "startdate", "dropdate", "maccedate", "deaddate", "finishdate", "diffdays"}
 	patientColumnsWithDefault    = []string{"ID"}
 	patientPrimaryKeyColumns     = []string{"ID"}
 )
