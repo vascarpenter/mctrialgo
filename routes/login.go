@@ -50,6 +50,11 @@ func LoginRouterPost(c echo.Context) error {
 			session, _ := session.Get("oursession", c)
 			session.Values["userid"] = hospital.HospitalID
 			err = session.Save(c.Request(), c.Response())
+
+			if hospital.HospitalID == 1 {
+				return c.Redirect(http.StatusFound, "/admin")
+			}
+
 			return c.Redirect(http.StatusFound, "/")
 		}
 

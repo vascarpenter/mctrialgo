@@ -34,15 +34,13 @@ func setUserMiddleware() echo.MiddlewareFunc {
 
 			if session, err := session.Get("oursession", c); err == nil {
 				if userid, ok := session.Values["userid"]; ok {
-					//fmt.Printf("%+v", userid)
-					if userid != nil {
-						useridint := userid.(uint)
-						if useridint != 0 {
-							hosp, _ := models.Hospitals(models.HospitalWhere.HospitalID.EQ(useridint)).One(context.Background(), db)
-							if hosp != nil {
-								c.Set("UserName", hosp.Name)
-								c.Set("UserID", useridint)
-							}
+					// cookie exist
+					if useridint := userid.(uint); useridint > 0 {
+						// get hospital name
+						hosp, _ := models.Hospitals(models.HospitalWhere.HospitalID.EQ(useridint)).One(context.Background(), db)
+						if hosp != nil {
+							c.Set("UserName", hosp.Name)
+							c.Set("UserID", useridint)
 						}
 					}
 				}
@@ -71,8 +69,11 @@ func main() {
 	// Echo instance
 	e := echo.New()
 
+	funcMap := template.FuncMap{
+		"safehtml": func(text string) template.HTML { return template.HTML(text) },
+	}
 	t := &Template{
-		templates: template.Must(template.ParseGlob("views/*.html")),
+		templates: template.Must(template.New("").Funcs(funcMap).ParseGlob("views/*.html")),
 	}
 	e.Renderer = t
 
@@ -87,6 +88,7 @@ func main() {
 
 	// Routes
 	e.Static("/css", "./static/css")
+	e.Static("/img", "./static/img")
 	e.GET("/register", routes.RegisterRouter)
 	e.POST("/register", routes.RegisterRouterPost)
 	e.GET("/resetpass", routes.ResetPassRouter, setUserMiddleware(), redirectLoginWithoutAuth())
@@ -96,6 +98,9 @@ func main() {
 	e.GET("/login", routes.LoginRouter)
 	e.POST("/login", routes.LoginRouterPost)
 	e.GET("/logout", routes.LogoutRouter)
+	e.GET("/admin", routes.AdminRouter, setUserMiddleware(), redirectLoginWithoutAuth())
+	e.GET("/admin/:func", routes.AdminAnalyzeRouter, setUserMiddleware(), redirectLoginWithoutAuth())
+	e.POST("/admin", routes.AdminRouterPost, setUserMiddleware(), redirectLoginWithoutAuth())
 	e.GET("/patientedit/:hosp/:ser", routes.PatientEditRouter, setUserMiddleware(), redirectLoginWithoutAuth())
 	e.POST("/patientedit/:hosp/:ser", routes.PatientEditRouterPost, setUserMiddleware(), redirectLoginWithoutAuth())
 	e.GET("/eventedit/:hosp/:ser/:ev", routes.EventEditRouter, setUserMiddleware(), redirectLoginWithoutAuth())
