@@ -7,6 +7,7 @@ require (
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gofrs/uuid v3.2.0+incompatible // indirect
+	github.com/google/uuid v1.1.1
 	github.com/gorilla/sessions v1.1.3
 	github.com/kat-co/vala v0.0.0-20170210184112-42e1d8b61f12
 	github.com/labstack/echo-contrib v0.8.0

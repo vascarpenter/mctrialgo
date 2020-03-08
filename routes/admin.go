@@ -2,12 +2,15 @@ package routes
 
 import (
 	"context"
+	"log"
 	"mctrialgo/models"
 	"net/http"
 	"os/exec"
 	"strconv"
+	"sync"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/volatiletech/null"
 	"github.com/volatiletech/sqlboiler/boil"
@@ -19,6 +22,7 @@ type adminHTMLtemplate struct {
 	HospitalName string
 	ImageTag     string
 	Message      string
+	Redirect     string
 	CSS          string
 }
 
@@ -45,6 +49,7 @@ func AdminRouter(c echo.Context) error {
 	htmlvariable := adminHTMLtemplate{
 		Title:        "adminコンソール",
 		HospitalName: username,
+		Redirect:     "",
 		Message:      "",
 		ImageTag:     "",
 		CSS:          "/css/index.css",
@@ -52,6 +57,33 @@ func AdminRouter(c echo.Context) error {
 
 	return c.Render(http.StatusOK, "admin", htmlvariable)
 
+}
+
+var wg sync.WaitGroup
+var (
+	m = &sync.Map{}
+)
+var id string
+
+// StatRouter ダウンロードの進捗を JSON で返す
+func StatRouter(c echo.Context) error {
+	ck, err := c.Cookie("download-progress")
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	progress := 0
+	v, ok := m.Load(ck.Value)
+	if ok {
+		if vi, ok := v.(int); ok {
+			progress = vi
+		}
+	}
+	return c.JSON(http.StatusOK, &struct {
+		Progress int `json:"progress"`
+	}{
+		Progress: progress,
+	})
 }
 
 // AdminAnalyzeRouter  GET "/admin/:func" を処理
@@ -67,18 +99,119 @@ func AdminAnalyzeRouter(c echo.Context) error {
 	htmlvariable := adminHTMLtemplate{
 		Title:        "adminコンソール",
 		HospitalName: username,
+		Redirect:     "",
 		Message:      "",
 		CSS:          "/css/index.css",
 	}
 	sel, _ := strconv.Atoi(c.Param("func"))
 	switch sel {
 	case 1:
-		htmlvariable.Message = analyze()
+		htmlvariable.Message = "now calculating"
+		id = uuid.New().String()
+		htmlvariable.Redirect = `<meta http-equiv="refresh" content="0;URL='/admin/2'" />`
+		c.SetCookie(&http.Cookie{
+			Name:  "download-progress",
+			Value: id,
+			Path:  "/",
+		})
+		// cookieを保存させる
+	case 2:
+		// https://mattn.kaoriya.net/software/lang/go/20170622160723.htm を参考にしました
+
+		htmlvariable.Message = "now calculating"
+		htmlvariable.Redirect = `
+		<script>
+		window.addEventListener('load', function() {
+		  var prog=function progress() {
+			  fetch("/stat", {
+				'credentials': "same-origin"
+			  }).then(function(response) {
+				return response.json();
+			  }).then(function(json) {
+				document.querySelector('#progress').textContent = "progress: "+json.progress+"%";
+			  if (json.progress >= 100) {
+				  location.href = "/admin/3";
+				  clearInterval();
+			  }
+			})
+		  };
+		  setInterval(prog,1000);
+		}, false);
+		</script>
+		`
+		// 非同期で走らせる
+		m.Store(id, 0)
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			_ = analyze()
+			m.Store(id, 100) // progress 100%
+		}()
+	case 3:
+		wg.Wait()
+		m.Store(id, nil)
+		htmlvariable.Message = "finished"
 		htmlvariable.ImageTag = "<img src=/img/test.png><br>"
+
+		//delete cookie
+		c.SetCookie(&http.Cookie{
+			Name:    "download-progress",
+			Value:   id,
+			Path:    "/",
+			Expires: time.Now().Add(-1 * time.Hour),
+		})
+		/*
+			case 4:
+				htmlvariable.Message = "now testing cookie and realtime rendering... sleep 100sec"
+				id = uuid.New().String()
+				htmlvariable.Redirect = `<meta http-equiv="refresh" content="0;URL='/admin/4'" />`
+				c.SetCookie(&http.Cookie{
+					Name:  "download-progress",
+					Value: id,
+					Path:  "/",
+				})
+			case 5:
+				// https://mattn.kaoriya.net/software/lang/go/20170622160723.htm を参考にしました
+				htmlvariable.Redirect = `
+				<script>
+				window.addEventListener('load', function() {
+					var prog=function progress() {
+						fetch("/stat", {
+						'credentials': "same-origin"
+						}).then(function(response) {
+						return response.json();
+						}).then(function(json) {
+						document.querySelector('#progress').textContent = "progress: "+json.progress+"%";
+						if (json.progress >= 100) {
+							location.href = "/admin/5";
+							clearInterval();
+						}
+					})
+					};
+					setInterval(prog,1000);
+				}, false);
+				</script>
+				`
+				// 非同期で走らせる
+				m.Store(id, 0)
+				wg.Add(1)
+				go func() {
+					defer wg.Done()
+					for i := 0; i < 10; i++ {
+						time.Sleep(2 * time.Second)
+						m.Store(id, i*10)
+					}
+					m.Store(id, 100)
+				}()
+
+			case 6:
+				wg.Wait()
+				m.Store(id, nil)
+				htmlvariable.Message = "finished"
+		//*/
 	default:
 		htmlvariable.Message = "エラー"
 	}
-
 	return c.Render(http.StatusOK, "admin", htmlvariable)
 
 }
@@ -131,6 +264,7 @@ func analyze() string {
 
 		}
 	}
+	m.Store(id, 50) // progress 50%
 	// 強引にRを動かし解析
 	out, err := exec.Command("/usr/local/bin/Rscript", "analysis.R").CombinedOutput()
 	if err != nil {
@@ -157,6 +291,7 @@ func AdminRouterPost(c echo.Context) error {
 		HospitalName: username,
 		ImageTag:     "",
 		Message:      "",
+		Redirect:     "",
 		CSS:          "/css/index.css",
 	}
 

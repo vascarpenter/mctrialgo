@@ -26,10 +26,13 @@ func IndexRouter(c echo.Context) error {
 	ctx := context.Background()
 
 	userid := c.Get("UserID") // useid is not nil, because if nil, middleware detects it
-	if userid == 0 || userid == nil {
+	useridint := userid.(uint)
+	if useridint == 0 {
 		return c.Redirect(http.StatusFound, "/login")
 	}
-	useridint := userid.(uint)
+	if useridint == 1 {
+		return c.Redirect(http.StatusFound, "/admin")
+	}
 	username := c.Get("UserName").(string)
 
 	// SQL: SELECT * FROM patients WHERE hospital_id = ?

@@ -89,6 +89,7 @@ func main() {
 	// Routes
 	e.Static("/css", "./static/css")
 	e.Static("/img", "./static/img")
+	e.Static("/javascript", "./static/javascript")
 	e.GET("/register", routes.RegisterRouter)
 	e.POST("/register", routes.RegisterRouterPost)
 	e.GET("/resetpass", routes.ResetPassRouter, setUserMiddleware(), redirectLoginWithoutAuth())
@@ -98,6 +99,7 @@ func main() {
 	e.GET("/login", routes.LoginRouter)
 	e.POST("/login", routes.LoginRouterPost)
 	e.GET("/logout", routes.LogoutRouter)
+	e.GET("/stat", routes.StatRouter)
 	e.GET("/admin", routes.AdminRouter, setUserMiddleware(), redirectLoginWithoutAuth())
 	e.GET("/admin/:func", routes.AdminAnalyzeRouter, setUserMiddleware(), redirectLoginWithoutAuth())
 	e.POST("/admin", routes.AdminRouterPost, setUserMiddleware(), redirectLoginWithoutAuth())

@@ -53,11 +53,13 @@ make import  (SQLが読み込まれデータ構造とサンプルデータが入
 
 ディレクトリ構造
 ```
+├── javascript
 ├── models
 ├── routes
 ├── static
 │   ├── css
-│   └── img
+│   ├── img
+│   └── javascript
 └── views
 ```
 
@@ -83,6 +85,7 @@ make run
   - 詳しくはanalysis.Rを見て適宜変更を (現在は死亡イベントを解析)
   - 昔ダウンロードしてきた TatsukiRcodeKMplot.r を使用していますが、いまそこにアクセスできないし..
   - https://github.com/SteveLane/CodeLibrary 内にも TatsukiRcodeKMplot.r はありますね
+  - 非同期計算にしました
 
 注意
 - cookieのsecret keyがハードコードされているので変更を。

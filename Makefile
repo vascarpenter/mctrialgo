@@ -11,7 +11,7 @@ build:
 	go build
 
 clean: 
-	rm -f server mctrialgo mctrialgo.zip
+	rm -f server mctrialgo mctrialgo.zip static/img/test.png
 
 zip:	clean dump
 	zip -9 -r mctrialgo.zip ./*
