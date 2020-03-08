@@ -53,7 +53,6 @@ make import  (SQLが読み込まれデータ構造とサンプルデータが入
 
 ディレクトリ構造
 ```
-├── javascript
 ├── models
 ├── routes
 ├── static
