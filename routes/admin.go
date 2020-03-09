@@ -5,6 +5,7 @@ import (
 	"log"
 	"mctrialgo/models"
 	"net/http"
+	"os"
 	"os/exec"
 	"strconv"
 	"sync"
@@ -138,7 +139,7 @@ func AdminAnalyzeRouter(c echo.Context) error {
 		  setInterval(prog,1000);
 		}, false);
 		</script>
-		`
+		` // 起動時から 1000msec間隔で/statし、progressに表示、>=100なら自動起動を中止
 		// 非同期で走らせる
 		m.Store(id, 0)
 		wg.Add(1)
@@ -266,7 +267,11 @@ func analyze() string {
 	}
 	m.Store(id, 50) // progress 50%
 	// 強引にRを動かし解析
-	out, err := exec.Command("/usr/local/bin/Rscript", "analysis.R").CombinedOutput()
+	var rscript string
+	if rscript = os.Getenv("RSCRIPT"); rscript == "" {
+		rscript = "/usr/local/bin/Rscript"
+	}
+	out, err := exec.Command(rscript, "analysis.R").CombinedOutput()
 	if err != nil {
 		output += err.Error()
 	} else {

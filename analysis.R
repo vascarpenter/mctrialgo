@@ -5,9 +5,18 @@
 library(survival)
 library(RMySQL)
 
-
+# read env variables
 drv<-dbDriver("MySQL")
-conn<-dbConnect(drv,user="oge", password="hogehogeA00", dbname="studydb")
+dbhost <- Sys.getenv("MYSQL_HOST")
+dbhost <- ifelse(dbhost=="","",dbhost)
+dbuser <- Sys.getenv("MYSQL_USER")
+dbuser <- ifelse(dbuser=="","oge",dbuser)
+dbpass <- Sys.getenv("MYSQL_PASSWORD")
+dbpass <- ifelse(dbpass=="","hogehogeA00",dbpass)
+dbname <- Sys.getenv("MYSQL_DATABASE")
+dbname <- ifelse(dbname=="","studydb",dbname)
+
+conn<-dbConnect(drv,user=dbuser, password=dbpass, dbname=dbname, host=dbhost)
 d<-dbReadTable(conn,"patients")
 dbDisconnect(conn)
 

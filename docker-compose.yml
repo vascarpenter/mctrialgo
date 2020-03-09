@@ -1,0 +1,42 @@
+version: '3'
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - "./nginx-docker/conf.d:/etc/nginx/conf.d"
+    links:
+      - mctrialgo
+
+  mctrialgo:
+    build: .
+    image: mctrialgo
+    container_name: mctrialgo
+    hostname: mctrialgo
+    working_dir: /usr/src/mctrialgo
+    command: [ ./mctrialgo ]
+    ports:
+      - "3000:3000"
+    links:
+      - mysql
+
+  mysql:
+    build: ./mysql-docker
+    image: mysql:5.6
+    container_name: mysql
+    hostname: mysql
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_USER: "oge"
+      MYSQL_PASSWORD: "hogehogeA00"
+      MYSQL_DATABASE: "studydb"
+      MYSQL_ROOT_PASSWORD: "rootA00"
+    volumes:
+      - ./mysql-docker/data:/var/lib/mysql
+      - ./mysql-docker/initdb.d:/docker-entrypoint-initdb.d
+      - ./mysql-docker/my.cnf:/etc/mysql/conf.d/my.cnf
+    

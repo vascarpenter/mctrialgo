@@ -7,6 +7,7 @@ import (
 	"mctrialgo/models"
 	"mctrialgo/routes"
 	"net/http"
+	"os"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/sessions"
@@ -83,7 +84,11 @@ func main() {
 	}))
 	e.Use(middleware.Recover())
 
-	var store = sessions.NewCookieStore([]byte("secret key"))
+	var keystore string
+	if keystore = os.Getenv("COOKIE_SEED"); keystore == "" {
+		keystore = "secret key"
+	}
+	var store = sessions.NewCookieStore([]byte(keystore))
 	e.Use(session.Middleware(store))
 
 	// Routes
@@ -124,5 +129,10 @@ func main() {
 	}
 
 	// Start server
-	e.Logger.Fatal(e.Start(":3000"))
+	var port string
+	if port = os.Getenv("PORT"); port == "" {
+		port = "3000"
+	}
+
+	e.Logger.Fatal(e.Start(":" + port))
 }

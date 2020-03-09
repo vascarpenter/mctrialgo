@@ -85,7 +85,11 @@ make run
   - 昔ダウンロードしてきた TatsukiRcodeKMplot.r を使用していますが、いまそこにアクセスできないし..
   - https://github.com/SteveLane/CodeLibrary 内にも TatsukiRcodeKMplot.r はありますね
   - 非同期計算にしました
-
+  - Docker対応にした
+    - 作成：docker-compose build
+    - 起動：docker-compose up -d
+    - 終了：docker-compose down
+    
 注意
 - cookieのsecret keyがハードコードされているので変更を。
 - VSCodeのlintはかなーり強力だが、html templateの中の typo までは指摘してくれず真っ白画面になる   html comment  {{/* */}} なんぞを使って切り分けしていくしかない go template lintは思ってたのとは違う

@@ -2,15 +2,30 @@ package routes
 
 import (
 	"database/sql"
+	"fmt"
+	"os"
 	"time"
 
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/volatiletech/sqlboiler/boil"
 )
 
 // Repository DBを開いてORMと合体させる
 func Repository() *sql.DB {
-	db, err := sql.Open("mysql", "oge:hogehogeA00@tcp(127.0.0.1:3306)/studydb?parseTime=true&loc=Asia%2FTokyo")
+	var host, mysqluser, mysqlpass, mysqldb string
+	if host = os.Getenv("MYSQL_HOST"); host == "" {
+		host = "127.0.0.1"
+	}
+	if mysqluser = os.Getenv("MYSQL_USER"); mysqluser == "" {
+		mysqluser = "oge"
+	}
+	if mysqlpass = os.Getenv("MYSQL_PASSWORD"); mysqlpass == "" {
+		mysqlpass = "hogehogeA00"
+	}
+	if mysqldb = os.Getenv("MYSQL_DATABASE"); mysqldb == "" {
+		mysqldb = "studydb"
+	}
+	sqlstring := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?parseTime=true&loc=Asia%%2FTokyo", mysqluser, mysqlpass, host, mysqldb)
+	db, err := sql.Open("mysql", sqlstring)
 
 	if err != nil {
 		panic(err)

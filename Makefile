@@ -12,7 +12,10 @@ build:
 
 clean: 
 	rm -f server mctrialgo mctrialgo.zip static/img/test.png
+	rm -rf mysql-docker/data/*
 
 zip:	clean dump
 	zip -9 -r mctrialgo.zip ./*
+
+
 
